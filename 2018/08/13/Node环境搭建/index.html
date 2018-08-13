@@ -108,22 +108,20 @@
 
 
 
-  <meta name="description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身也是一个Node.js 模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速，切换registr">
+  <meta name="description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry">
 <meta name="keywords" content="Web,Node">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node环境搭建">
 <meta property="og:url" content="http://yoursite.com/2018/08/13/Node环境搭建/index.html">
 <meta property="og:site_name" content="Paradise of Web">
-<meta property="og:description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身也是一个Node.js 模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速，切换registr">
+<meta property="og:description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-13T02:07:33.270Z">
+<meta property="og:updated_time" content="2018-08-13T06:42:51.113Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node环境搭建">
-<meta name="twitter:description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身也是一个Node.js 模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速，切换registr">
+<meta name="twitter:description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry">
 
 
-
-  <link rel="alternate" href="/atom.xml" title="Paradise of Web" type="application/atom+xml" />
 
 
 
@@ -337,7 +335,7 @@
                 
               
 
-              <time title="创建时间：2018-08-13 09:50:58 / 修改时间：10:07:33" itemprop="dateCreated datePublished" datetime="2018-08-13T09:50:58+08:00">2018-08-13</time>
+              <time title="创建时间：2018-08-13 09:50:58 / 修改时间：14:42:51" itemprop="dateCreated datePublished" datetime="2018-08-13T09:50:58+08:00">2018-08-13</time>
             
 
             
@@ -375,14 +373,13 @@
       
 
       
-        <p>由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境</p>
+        <p>由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：</p>
 <ul>
 <li>nvm(Node.js Version Manager)：解决多版本共存、切换问题</li>
-<li>npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身也是一个Node.js 模块</li>
-<li>nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速，切换registry功能</li>
+<li>npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块</li>
+<li>nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry功能</li>
 </ul>
-<h2 id="NVM"><a href="#NVM" class="headerlink" title="NVM"></a>NVM</h2><p>Node.js版本变化较大，建议使用nvm进行node版本管理</p>
-<h3 id="nvm安装命令"><a href="#nvm安装命令" class="headerlink" title="nvm安装命令"></a>nvm安装命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash</span><br></pre></td></tr></table></figure>
+<h2 id="NVM"><a href="#NVM" class="headerlink" title="NVM"></a>NVM</h2><h3 id="nvm安装命令"><a href="#nvm安装命令" class="headerlink" title="nvm安装命令"></a>nvm安装命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash</span><br></pre></td></tr></table></figure>
 <p>通过curl下载install.sh脚本并执行，待执行完成后，它会把nvm命令的执行路径放到~/.bashrc文件里，通过执行source命令，使环境变量生效</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
 <h3 id="nvm的常用命令"><a href="#nvm的常用命令" class="headerlink" title="nvm的常用命令"></a>nvm的常用命令</h3><ul>
@@ -549,14 +546,16 @@
           
 
           
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
 
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tianxueweii" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
           
 
           
