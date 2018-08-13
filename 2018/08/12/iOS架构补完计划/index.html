@@ -108,19 +108,19 @@
 
 
 
-  <meta name="description" content="本文基于CocoaChina博主kirito_song的文章，并整理了近期媒体云项目在iOS端的实践撰写。 概述架构上的设计、本质上都是三个角色：数据结构、数据流管理、数据展示。 不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。而无论哪种思想、最终都逃不开三个问题的取舍。代码量、通用性、可">
+  <meta name="description" content="移动端架构上的设计，本质上都是三个角色：数据结构、数据流管理、数据展示。 不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。而无论哪种思想、最终都逃不开三个问题的《《取舍》》。代码量、通用性、可读性。 MVCMVC就是典型的着重通用型与可读性、这正是一个作为万物之初的架构所需要保证的事。简单">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS架构补完计划">
 <meta property="og:url" content="http://yoursite.com/2018/08/12/iOS架构补完计划/index.html">
 <meta property="og:site_name" content="Paradise of Web">
-<meta property="og:description" content="本文基于CocoaChina博主kirito_song的文章，并整理了近期媒体云项目在iOS端的实践撰写。 概述架构上的设计、本质上都是三个角色：数据结构、数据流管理、数据展示。 不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。而无论哪种思想、最终都逃不开三个问题的取舍。代码量、通用性、可">
+<meta property="og:description" content="移动端架构上的设计，本质上都是三个角色：数据结构、数据流管理、数据展示。 不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。而无论哪种思想、最终都逃不开三个问题的《《取舍》》。代码量、通用性、可读性。 MVCMVC就是典型的着重通用型与可读性、这正是一个作为万物之初的架构所需要保证的事。简单">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/2018/08/12/iOS架构补完计划/mvp.jpg">
-<meta property="og:updated_time" content="2018-08-12T17:41:44.723Z">
+<meta property="og:updated_time" content="2018-08-13T03:11:06.385Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS架构补完计划">
-<meta name="twitter:description" content="本文基于CocoaChina博主kirito_song的文章，并整理了近期媒体云项目在iOS端的实践撰写。 概述架构上的设计、本质上都是三个角色：数据结构、数据流管理、数据展示。 不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。而无论哪种思想、最终都逃不开三个问题的取舍。代码量、通用性、可">
+<meta name="twitter:description" content="移动端架构上的设计，本质上都是三个角色：数据结构、数据流管理、数据展示。 不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。而无论哪种思想、最终都逃不开三个问题的《《取舍》》。代码量、通用性、可读性。 MVCMVC就是典型的着重通用型与可读性、这正是一个作为万物之初的架构所需要保证的事。简单">
 <meta name="twitter:image" content="http://yoursite.com/2018/08/12/iOS架构补完计划/mvp.jpg">
 
 
@@ -339,7 +339,7 @@
                 
               
 
-              <time title="创建时间：2018-08-12 23:00:14" itemprop="dateCreated datePublished" datetime="2018-08-12T23:00:14+08:00">2018-08-12</time>
+              <time title="创建时间：2018-08-12 20:12:28" itemprop="dateCreated datePublished" datetime="2018-08-12T20:12:28+08:00">2018-08-12</time>
             
 
             
@@ -356,7 +356,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-08-13 01:41:44" itemprop="dateModified" datetime="2018-08-13T01:41:44+08:00">2018-08-13</time>
+                <time title="修改时间：2018-08-13 11:11:06" itemprop="dateModified" datetime="2018-08-13T11:11:06+08:00">2018-08-13</time>
               
             
           </span>
@@ -389,24 +389,19 @@
       
 
       
-        <p>本文基于CocoaChina博主kirito_song的文章，并整理了近期媒体云项目在iOS端的实践撰写。</p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>架构上的设计、本质上都是三个角色：数据结构、数据流管理、数据展示。</p>
-<p>不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。<br>而无论哪种思想、最终都逃不开三个问题的<code>取舍</code>。代码量、通用性、可读性。</p>
+        <p>移动端架构上的设计，本质上都是三个角色：数据结构、数据流管理、数据展示。</p>
+<p>不管是MVC、MVVM、MVP、VIPER或者任何新的设计模式、都跳不出这三个角色。无非是把数据管理者的工作进行拆分、唯一的界定标准就是把工作拆分的粒度大小。<br>而无论哪种思想、最终都逃不开三个问题的《《取舍》》。代码量、通用性、可读性。</p>
 <h2 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h2><p>MVC就是典型的着重通用型与可读性、这正是一个作为万物之初的架构所需要保证的事。简单、易学。</p>
-<ul>
+<h3 id="架构模型"><a href="#架构模型" class="headerlink" title="架构模型"></a>架构模型</h3><ul>
 <li>Model：数据结构，数据映射</li>
 <li>View：数据展示</li>
 <li>Controller：负责根据需求对Model及View间的数据流调配</li>
 </ul>
-<p>不过和广义的MVC不同，iOS端由于UIViewController自带一个容器View。所以除了上述的正统任务之外，Controller还需要承担View的生成，布局等的任务。Controller实际上是Controller+View的一个角色</p>
-<h3 id="MVC在移动端上的痛点"><a href="#MVC在移动端上的痛点" class="headerlink" title="MVC在移动端上的痛点"></a>MVC在移动端上的痛点</h3><ul>
-<li>复杂页面在控制器C层会被多次封装，从而产生多个View层，View层被再拆分为子View层。子View层的交互事件需要一层一层回到Controller层获取处理结果，处理完的数据（Model）需要再一层一层传给最终的这个子View</li>
-<li>控制器层代码臃肿，难以维护。由于UIKit框架的设计原因，UIViewController承担了过多不应承担的责任</li>
-</ul>
-<h3 id="MVC的瘦身-胖Model与瘦Model"><a href="#MVC的瘦身-胖Model与瘦Model" class="headerlink" title="MVC的瘦身-胖Model与瘦Model"></a>MVC的瘦身-胖Model与瘦Model</h3><ul>
+<h3 id="Controller的瘦身"><a href="#Controller的瘦身" class="headerlink" title="Controller的瘦身"></a>Controller的瘦身</h3><p>不过和广义的MVC不同，iOS端由于UIViewController自带一个容器View。所以除了上述的正统任务之外，Controller还需要承担View的生成，布局等的任务。Controller实际上是Controller+View的一个角色，这样的设定也导致了C层过于臃肿的问题</p>
+<ul>
 <li><p>胖Model</p>
 <p>  主旨是Controller从Model里拿到的数据、不需要进行更多的判断、处理等操作、就能使用。缺点是移植困难、复用困难</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Json Data:</span><br><span class="line">  		 timestamp:1234567</span><br><span class="line">FatModel:</span><br><span class="line">    @property (nonatomic, assign) CGFloat timestamp;</span><br><span class="line">  		 - (NSString *)ymdDateString; // 2015-04-20 15:16</span><br><span class="line">    - (NSString *)standardString; // 3分钟前、1小时前、一天前、2015-3-13 12:34</span><br><span class="line">Controller:</span><br><span class="line">  		 self.dateLabel.text = [FatModelIns ymdDateString];</span><br><span class="line">  		 self.gapLabel.text = [FatModelIns standardString];</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Json Data:</span><br><span class="line">	timestamp:1234567</span><br><span class="line"></span><br><span class="line">FatModel:</span><br><span class="line">	@property (nonatomic, assign) CGFloat timestamp;</span><br><span class="line">	- (NSString *)ymdDateString; // 2015-04-20 15:16</span><br><span class="line">	- (NSString *)standardString; // 3分钟前、1小时前、一天前</span><br><span class="line"></span><br><span class="line">Controller:</span><br><span class="line">	self.dateLabel.text = [FatModelIns ymdDateString];</span><br><span class="line">	self.gapLabel.text = [FatModelIns standardString];</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>瘦Model</p>
 <p>  就是要把MVC的M贯彻倒底、除了业务的表达啥都不管。所以瘦Model要借助一些外来的辅助模块（索性可以叫Helper、Util）来对弱业务做抽象。</p>
@@ -414,24 +409,8 @@
 </li>
 </ul>
 <p>总结：虽然胖瘦Model都一定程度上尝试解决Controller过于臃肿的问题，但是仅仅停留在数据处理、格式化层面，真正的业务逻辑、交互逻辑依然存放于Controller中</p>
-<h2 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h2><p>MVVM起源于前端，在Vue、小程序中已经十分普及，在iOS端的实践究其初衷也是为了Controller减负。刚才的胖Model只从Controller移植走了一些简单的弱业务。<br>而ViewModel则干脆把数据的处理全部从Controller移植了出去，Controller只做数据绑定操作，当Model更改，界面也会响应式更改。</p>
-<ul>
-<li><p>Model</p>
-<p>  和正统MVC中的瘦Model一样、只承载最基本的数据单元，数据映射。</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@interface UserModel: NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *userName;</span><br><span class="line">@property (nonatomic, copy) NSString *sex;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>View</p>
-<p>  只做展示工作，不承接业务逻辑。但是需要在view中做一些将viewModel与View绑定的操作</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void) awakeFromNib &#123;</span><br><span class="line">   	[super awakeFromNib];</span><br><span class="line">   	RAC(self.userNameLabel, text) = RACObserve(self, viewModel.userName);</span><br><span class="line">   	RAC(self.userSexLabel, text) = RACObserve(self, viewModel.sex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>ViewModel</p>
-<p>  整个ViewModel里涵盖了所有页面展示需要的要素。如新闻列表，频道信息等，并且涵盖了对这些数据的所有操作方法。如加载更多、搜索、删除。但是、ViewModel到底也是一个Model层、不应该引入UIKit(View层)。如果删除需要弹窗、那么这个弹窗动作是不应该交给ViewModel来搞的、因为这已经不属于数据处理的范畴了。这个ViewModel其实就是把Controller中与页面相关的数据处理代码挪进来了而已。</p>
-</li>
-</ul>
-<h3 id="RAC对于MVVM的意义是什么"><a href="#RAC对于MVVM的意义是什么" class="headerlink" title="RAC对于MVVM的意义是什么"></a>RAC对于MVVM的意义是什么</h3><p>RAC(ReactiveCocoa)并不是MVVM思想的根本，不用RAC也能使用MVVM。但是使用RAC能更好地体现MVVM的精髓，就像Web使用React、Vue一样。MVC中的M与V是应该尽量不要互相持有的。这个时候如何把原本松散的二者通过C紧密的联系起来、就要进行数据绑定。而这种数据绑定、iOS本身并没有什么太靠谱的办法。（如Vue中<code></code>这种写法）</p>
-<p>虽然KVO、Notification、block、delegate和target-action都可以用来做数据通信进而实现绑定，但都不如ReactiveCocoa来的《《《优雅》》》。</p>
-<h2 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h2><p>本质上与MVVM没有区别，都是将Controller中关于Model和数据处理的代码移植到Presenter中，或者说是不适用RAC的MVVM也无不合适。</p>
-<ul>
+<h2 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h2><p>本质上与MVVM没有区别，只是将Controller中关于Model和数据处理的代码移植到Presenter中，但是MVP并不是一个完全剥离业务逻辑的设计模式</p>
+<h3 id="架构模型-1"><a href="#架构模型-1" class="headerlink" title="架构模型"></a>架构模型</h3><ul>
 <li><p>View</p>
 <p>  负责界面结构和布局管理，通过Presenter暴露的数据更新和数据获取的接口进行展示</p>
 </li>
@@ -443,6 +422,27 @@
 </li>
 </ul>
 <p><img src="/2018/08/12/iOS架构补完计划/mvp.jpg" alt=""></p>
+<h2 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h2><p>MVVM起源于前端，这种抽离模型响应式架构在Web开发及小程序开发中已经十分普及，在大厂甚至成为一种标准存在。MVVM的出现，为移动端开发Controller/Activity的瘦身带来启发，刚才讲到的胖Model只从Controller中移植了一些简单的弱业务，而大量的交互逻辑仍存放在Controller中</p>
+<h3 id="MVVM力求解决的开发痛点"><a href="#MVVM力求解决的开发痛点" class="headerlink" title="MVVM力求解决的开发痛点"></a>MVVM力求解决的开发痛点</h3><ul>
+<li>过长的数据响应链，每次数据更新都要向上层传递</li>
+<li>控制器层代码臃肿。由于UIKit框架的设计原因，UIViewController承担了过多不应承担的责任，Controller内包含了数据、界面、逻辑元素，只能通过规范约束，难以管理</li>
+<li>架构层面结构划分不清晰，增加了移动端的学习难度</li>
+</ul>
+<h3 id="架构模型-2"><a href="#架构模型-2" class="headerlink" title="架构模型"></a>架构模型</h3><ul>
+<li><p>Model</p>
+<p>  和MVC中的瘦Model一样。只承载最基本的数据单元和数据映射。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@interface UserModel: NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *userName;</span><br><span class="line">@property (nonatomic, copy) NSString *sex;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>View</p>
+<p>  View层包含了UIKit框架下，UIView和UIViewController及其子类。在View层中只需要编写页面展示模板和数据绑定，不写任何业务逻辑。</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)awakeFromNib &#123;</span><br><span class="line">   	[super awakeFromNib];</span><br><span class="line">   	RAC(self.userNameLabel, text) = RACObserve(self, viewModel.userName);</span><br><span class="line">   	RAC(self.userSexLabel, text) = RACObserve(self, viewModel.sex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ViewModel</p>
+<p>  ViewModel里涵盖了所有View层绑定需要的数据模型、逻辑函数、事件响应函数。当数据发生改变，View层会响应式渲染更新界面。</p>
+</li>
+</ul>
+<h3 id="RAC对于MVVM的意义"><a href="#RAC对于MVVM的意义" class="headerlink" title="RAC对于MVVM的意义"></a>RAC对于MVVM的意义</h3><p>RAC(ReactiveCocoa)并不是MVVM思想的核心，不用RAC也能使用MVVM。但是使用RAC能更好的体现MVVM的精髓，即数据绑定处理、响应式渲染。就像Web开发中，使用React、Vue那样。在MVC中，M和V若无持有关系，在数据传递和渲染时会造成很多麻烦，那么如何把原本松散的两者通过中间层联系起来（数据绑定），在iOS本身并没有太靠谱的办法，在Vue中有<code></code>这种优雅的写法。</p>
+<p>虽然KVO、Notification、block、delegate和target-action都可以用来做数据通信进而实现绑定，但都不如RAC来的《《优雅》》。</p>
 <h2 id="关于架构设计的一些观点"><a href="#关于架构设计的一些观点" class="headerlink" title="关于架构设计的一些观点"></a>关于架构设计的一些观点</h2><ul>
 <li><p>控制好Controller的代码量</p>
 <p>  随着项目的进行、代码量最多只能优化、膨胀不可避免。而在没办法继续精简的前提下、想控制Controller的代码量。就要在可读性和通用性之间进行取舍。该挪走的时候就挪走吧、毕竟梳理一个单独的模块、比梳理一个几千行的Controller要方便多了。</p>
@@ -459,6 +459,7 @@
 <li><p>无论用哪种模式、都要深刻的理解每个模块不同的职责</p>
 </li>
 </ul>
+<p>ps: 本文基于CocoaChina博主kirito_song的文章，并整理了近期项目实践撰写。</p>
 
       
     </div>
@@ -492,7 +493,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/07/实现虾米音乐首页视差滚动特效/" rel="next" title="实现虾米音乐首页视差滚动特效">
+              <a href="/2018/07/20/实现虾米音乐首页视差滚动特效/" rel="next" title="实现虾米音乐首页视差滚动特效">
                 <i class="fa fa-chevron-left"></i> 实现虾米音乐首页视差滚动特效
               </a>
             
@@ -502,8 +503,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/08/12/UINavigationBar定制的正确姿势/" rel="prev" title="UINavigationBar定制的正确姿势">
-                UINavigationBar定制的正确姿势 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/08/13/Node环境搭建/" rel="prev" title="Node环境搭建">
+                Node环境搭建 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -597,7 +598,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">2</span>
+                      
+                    
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -640,7 +643,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC"><span class="nav-number">2.</span> <span class="nav-text">MVC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC在移动端上的痛点"><span class="nav-number">2.1.</span> <span class="nav-text">MVC在移动端上的痛点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC的瘦身-胖Model与瘦Model"><span class="nav-number">2.2.</span> <span class="nav-text">MVC的瘦身-胖Model与瘦Model</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVVM"><span class="nav-number">3.</span> <span class="nav-text">MVVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RAC对于MVVM的意义是什么"><span class="nav-number">3.1.</span> <span class="nav-text">RAC对于MVVM的意义是什么</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVP"><span class="nav-number">4.</span> <span class="nav-text">MVP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于架构设计的一些观点"><span class="nav-number">5.</span> <span class="nav-text">关于架构设计的一些观点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC"><span class="nav-number">1.</span> <span class="nav-text">MVC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架构模型"><span class="nav-number">1.1.</span> <span class="nav-text">架构模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller的瘦身"><span class="nav-number">1.2.</span> <span class="nav-text">Controller的瘦身</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVP"><span class="nav-number">2.</span> <span class="nav-text">MVP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架构模型-1"><span class="nav-number">2.1.</span> <span class="nav-text">架构模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVVM"><span class="nav-number">3.</span> <span class="nav-text">MVVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVVM力求解决的开发痛点"><span class="nav-number">3.1.</span> <span class="nav-text">MVVM力求解决的开发痛点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#架构模型-2"><span class="nav-number">3.2.</span> <span class="nav-text">架构模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAC对于MVVM的意义"><span class="nav-number">3.3.</span> <span class="nav-text">RAC对于MVVM的意义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于架构设计的一些观点"><span class="nav-number">4.</span> <span class="nav-text">关于架构设计的一些观点</span></a></li></ol></div>
             
 
           </div>
