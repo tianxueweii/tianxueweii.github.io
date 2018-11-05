@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="图层几何学视图和图层布局差异 视图上的center，在图层上对应叫position center和position都代表了当前图层相对于父图层anchorPoint的位置 视图改变frame的实质是改变图层的frame frame是根据bounds，position和transform计算而来，所以当其中任何一个值发生改变，他都会变化。相反，改变frame的值同样会影响到他们当中的值 frame的">
+<meta name="keywords" content="iOS,Core Animation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Core Animation - Advanced Techniques-学习笔记（二）">
+<meta property="og:url" content="http://yoursite.com/2018/11/03/iOS Core Animation- Advanced Techniques-学习笔记（二）/index.html">
+<meta property="og:site_name" content="Paradise of Web">
+<meta property="og:description" content="图层几何学视图和图层布局差异 视图上的center，在图层上对应叫position center和position都代表了当前图层相对于父图层anchorPoint的位置 视图改变frame的实质是改变图层的frame frame是根据bounds，position和transform计算而来，所以当其中任何一个值发生改变，他都会变化。相反，改变frame的值同样会影响到他们当中的值 frame的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-05T12:50:54.981Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS Core Animation - Advanced Techniques-学习笔记（二）">
+<meta name="twitter:description" content="图层几何学视图和图层布局差异 视图上的center，在图层上对应叫position center和position都代表了当前图层相对于父图层anchorPoint的位置 视图改变frame的实质是改变图层的frame frame是根据bounds，position和transform计算而来，所以当其中任何一个值发生改变，他都会变化。相反，改变frame的值同样会影响到他们当中的值 frame的">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/03/iOS Core Animation- Advanced Techniques-学习笔记（二）/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS Core Animation - Advanced Techniques-学习笔记（二） | Paradise of Web</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Paradise of Web</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">不会弹吉他的贝斯手，不是好程序员</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/iOS Core Animation- Advanced Techniques-学习笔记（二）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tian Xueweii">
+      <meta itemprop="description" content="tianxueweii's iOS blog">
+      <meta itemprop="image" content="/images/default_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Paradise of Web">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS Core Animation - Advanced Techniques-学习笔记（二）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-03 20:41:37" itemprop="dateCreated datePublished" datetime="2018-11-03T20:41:37+08:00">2018-11-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-05 20:50:54" itemprop="dateModified" datetime="2018-11-05T20:50:54+08:00">2018-11-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="图层几何学"><a href="#图层几何学" class="headerlink" title="图层几何学"></a>图层几何学</h2><h3 id="视图和图层布局差异"><a href="#视图和图层布局差异" class="headerlink" title="视图和图层布局差异"></a>视图和图层布局差异</h3><ul>
+<li>视图上的<code>center</code>，在图层上对应叫<code>position</code></li>
+<li><code>center</code>和<code>position</code>都代表了当前图层相对于父图层<code>anchorPoint</code>的位置</li>
+<li>视图改变<code>frame</code>的实质是改变图层的<code>frame</code></li>
+<li><code>frame</code>是根据<code>bounds</code>，<code>position</code>和<code>transform</code>计算而来，所以当其中任何一个值发生改变，他都会变化。相反，改变<code>frame</code>的值同样会影响到他们当中的值</li>
+<li><code>frame</code>的宽高可能和<code>bounds</code>不一致，比如视图旋转后</li>
+</ul>
+<h3 id="anchorPoint属性-锚点"><a href="#anchorPoint属性-锚点" class="headerlink" title="anchorPoint属性 - 锚点"></a>anchorPoint属性 - 锚点</h3><ul>
+<li>锚点可以理解为视图的把柄，缩放移动旋转等操作，会相对于锚点进行</li>
+<li><code>anchorPoint</code>通过单位坐标描述，默认值是{0.5, 0.5}（图层中心）</li>
+<li><code>anchorPoint</code>发生了改变但是<code>position</code>没有改变，所以图层会重新布局，<code>frame</code>会发生改变</li>
+<li><code>anchorPoint</code>改变后，建议重新设置<code>frame</code>或<code>position</code></li>
+</ul>
+<h3 id="坐标系操作"><a href="#坐标系操作" class="headerlink" title="坐标系操作"></a>坐标系操作</h3><ul>
+<li>CALayer提供了点或矩形在不同图层坐标系间转化的方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (CGPoint)convertPoint:(CGPoint)point fromLayer:(CALayer *)layer;</span><br><span class="line">- (CGPoint)convertPoint:(CGPoint)point toLayer:(CALayer *)layer;</span><br><span class="line">- (CGRect)convertRect:(CGRect)rect fromLayer:(CALayer *)layer;</span><br><span class="line">- (CGRect)convertRect:(CGRect)rect toLayer:(CALayer *)layer;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以通过设置<code>geometryFlipped</code>翻转整个坐标系，他是BOOL型的</li>
+</ul>
+<h3 id="图层的三维坐标"><a href="#图层的三维坐标" class="headerlink" title="图层的三维坐标"></a>图层的三维坐标</h3><ul>
+<li>图层有<code>zPosition</code>和<code>anchorPointZ</code>来描述在Z轴上的位置</li>
+<li>图层是一个完全扁平的对象，并没有更多属性来描述他在Z轴上的高度了</li>
+<li>图层的<code>zPosition</code>除了使用CATransform3D来渲染3D动画，还可以用来调整图层的显示顺序，通常图层的显示顺序，是使用“画家的算法”不断覆盖上去的，但通过改变<code>zPosition</code>可以将图层顺序前置</li>
+</ul>
+<h3 id="图层HitTest"><a href="#图层HitTest" class="headerlink" title="图层HitTest"></a>图层HitTest</h3><ul>
+<li>CALayer并不关心任何响应事件但是它有一系列的方法帮你处理事件：<code>-containsPoint:</code>和<code>-hitTest:</code></li>
+<li><code>-containsPoint:</code>接受一个在本图层坐标系下的CGPoint，如果这个点在图层<code>frame</code>范围内就返回YES</li>
+<li><code>-hitTest:</code>方法同样接受一个CGPoint类型参数，但返回的不是BOOL类型，它返回图层本身，或者包含这个坐标点的叶子节点图层</li>
+<li><code>-hitTest:</code>的测算的顺序依赖于图层树的顺序，和<code>zPosition</code>改变后显示顺序无关。所以使用<code>zPosition</code>改变图层显示顺序后，事件将会无法响应</li>
+</ul>
+<h2 id="视觉效果"><a href="#视觉效果" class="headerlink" title="视觉效果"></a>视觉效果</h2><h3 id="圆角"><a href="#圆角" class="headerlink" title="圆角"></a>圆角</h3><ul>
+<li><code>conrnerRadius</code>属性控制着图层角的曲率</li>
+<li><p>书中原话是这个曲率值只影响背景颜色而不影响背景图片或是子图层</p>
+<blockquote>
+<p>我认为可能并不是针对背景颜色，可能是对父图层的裁剪</p>
+</blockquote>
+</li>
+<li><p><code>masksToBounds</code>设置成YES的话，子图层超出父图层的区域会被裁剪，验证我上一条的猜测</p>
+</li>
+</ul>
+<h3 id="图层边框"><a href="#图层边框" class="headerlink" title="图层边框"></a>图层边框</h3><ul>
+<li><code>borderWidth</code>描述了图层边框宽度，这个边框的绘制是沿裁剪后的图层边缘，并且绘制在图层边界里面的，而且在所有子内容之前，也在子图层之前</li>
+<li><code>borderColor</code>描述了边框颜色信息</li>
+</ul>
+<h3 id="阴影"><a href="#阴影" class="headerlink" title="阴影"></a>阴影</h3><ul>
+<li>若需要增加阴影表现，只需要更改<code>shadowOpacity</code>属性，他是一个0.0（不可见）和1.0（完全不透明）之间的浮点数</li>
+<li>若要改动阴影的表现，你可以使用CALayer的另外三个属性：<code>shadowColor</code>，<code>shadowOffset</code>和<code>shadowRadius</code></li>
+<li><code>shadowRadius</code>控制了阴影的模糊度，当它的值是0的时候，阴影就和视图一样有一个非常确定的边界线。当值越来越大的时候，边界线看上去就会越来越模糊和自然。苹果的设计，更倾向于自然阴影，即值为0</li>
+<li>阴影路径是根据寄宿图轮廓来确定的</li>
+<li>阴影绘制在图层外部，所以<code>masksToBounds</code>设置成YES的话，阴影会被裁剪</li>
+<li>如果想沿着内容裁切，又想保留阴影，需要用到两个图层：一个只画阴影的空的外图层，和一个用masksToBounds裁剪内容的内图层</li>
+<li>如果在图层渲染前知道阴影形状会是什么样子的，可以指定一个<code>shadowPath</code>来提高性能</li>
+</ul>
+<h3 id="图层蒙版"><a href="#图层蒙版" class="headerlink" title="图层蒙版"></a>图层蒙版</h3><ul>
+<li>通常创建一个无矩形视图最方便的方法，可以给它指定一个透明蒙板来实现，使用<code>mask</code>属性，这个属性所指向的类型就是CALayer</li>
+<li><code>mask</code>图层的<code>color</code>属性是无关紧要的，真正重要的是图层的轮廓。mask属性就像是一个饼干切割机，mask图层实心的部分会被保留下来，其他的则会被抛弃</li>
+</ul>
+<h3 id="拉伸过滤"><a href="#拉伸过滤" class="headerlink" title="拉伸过滤"></a>拉伸过滤</h3><ul>
+<li><p>当图片需要显示不同的大小的时候，有一种叫做拉伸过滤的算法就起到作用了。它作用于原图的像素上并根据需要生成新的像素显示在屏幕上 </p>
+<blockquote>
+<p>我的理解例如需要将一张20x20图显示在40x40的图层上，为了避免图片的像素化，通过过滤算法生成新的像素图</p>
+</blockquote>
+</li>
+<li><p><code>minificationFilter</code>和<code>magnificationFilter</code>属性描述了在图片需要缩小或拉伸时所用的过滤器算法</p>
+</li>
+<li><p>CALayer对图片的拉伸提供了三种算法</p>
+<ul>
+<li>kCAFilterLinear - 默认过滤器</li>
+<li>kCAFilterNearest - 效率非常快，但会使得压缩图片更糟，图片放大之后也显得块状或是马赛克严重</li>
+<li>kCAFilterTrilinear - 提高了性能，也避免了小概率因舍入错误引起的取样失灵的问题</li>
+</ul>
+</li>
+<li><p>如果是对于比较小的图或者是差异特别明显，极少斜线的大图，那么kCAFilterNearest既保证效率，同时又会保留最好的呈现效果</p>
+<blockquote>
+<p>kCAFilterLinear和kCAFilterTrilinear的差异并不明显，如果是简单图，kCAFilterNearest将会是最优选择</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="组透明"><a href="#组透明" class="headerlink" title="组透明"></a>组透明</h3><ul>
+<li>UIView的<code>alpha</code>属性和CALayer的<code>opacity</code>属性，这两个属性都是影响子层级的透明度的</li>
+<li>理想状况下，当设置了一个图层的透明度，希望它包含的整个图层树像一个整体一样的透明效果，但实际情况，有可能因为透明度的混合叠加造成的</li>
+<li>为了避免透明度混合造成的视觉上的混乱，可以使用<code>shouldRasterize</code>属性，来实现组透明的效果。如果设置了这个属性，在应用透明度之前，图层及其子图层都会被整合成一个整体的图片</li>
+<li><p>如果使用了shouldRasterize属性，就要确保你设置了<code>rasterizationScale</code>属性去匹配屏幕，以防止出现Retina屏幕像素化的问题</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">btn.layer.shouldRasterize = YES;</span><br><span class="line">btn.layer.rasterizationScale = [UIScreen mainScreen].scale;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Core-Animation/" rel="tag"># Core Animation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/01/iOS Core Animation- Advanced Techniques-学习笔记（一）/" rel="next" title="iOS Core Animation - Advanced Techniques-学习笔记（一）">
+                <i class="fa fa-chevron-left"></i> iOS Core Animation - Advanced Techniques-学习笔记（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/05/iOS Core Animation- Advanced Techniques-学习笔记（三）/" rel="prev" title="iOS Core Animation - Advanced Techniques-学习笔记（三）">
+                iOS Core Animation - Advanced Techniques-学习笔记（三） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/default_avatar.gif"
+                alt="Tian Xueweii" />
+            
+              <p class="site-author-name" itemprop="name">Tian Xueweii</p>
+              <p class="site-description motion-element" itemprop="description">tianxueweii's iOS blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tianxueweii" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#图层几何学"><span class="nav-number">1.</span> <span class="nav-text">图层几何学</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#视图和图层布局差异"><span class="nav-number">1.1.</span> <span class="nav-text">视图和图层布局差异</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#anchorPoint属性-锚点"><span class="nav-number">1.2.</span> <span class="nav-text">anchorPoint属性 - 锚点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#坐标系操作"><span class="nav-number">1.3.</span> <span class="nav-text">坐标系操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图层的三维坐标"><span class="nav-number">1.4.</span> <span class="nav-text">图层的三维坐标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图层HitTest"><span class="nav-number">1.5.</span> <span class="nav-text">图层HitTest</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视觉效果"><span class="nav-number">2.</span> <span class="nav-text">视觉效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#圆角"><span class="nav-number">2.1.</span> <span class="nav-text">圆角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图层边框"><span class="nav-number">2.2.</span> <span class="nav-text">图层边框</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阴影"><span class="nav-number">2.3.</span> <span class="nav-text">阴影</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图层蒙版"><span class="nav-number">2.4.</span> <span class="nav-text">图层蒙版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉伸过滤"><span class="nav-number">2.5.</span> <span class="nav-text">拉伸过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组透明"><span class="nav-number">2.6.</span> <span class="nav-text">组透明</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tian Xueweii</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

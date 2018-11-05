@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文是针对《iOS Core Animation: Advanced Techniques》相对重要知识点进行的总结笔记，插图和具体释义请参照原书 图层树深刻理解图层与视图 视图（UIView）是在屏幕上显示的，能够拦截用户行为（如手势输入）的矩形块，视图具有层级关系并可互相嵌套。 图层（CALayer）和视图（UIView）在概念上类似，和视图最大的不同，是图层不处理用户行为。 在iOS和Mac">
+<meta name="keywords" content="iOS,Core Animation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Core Animation - Advanced Techniques-学习笔记（一）">
+<meta property="og:url" content="http://yoursite.com/2018/11/01/iOS Core Animation- Advanced Techniques-学习笔记（一）/index.html">
+<meta property="og:site_name" content="Paradise of Web">
+<meta property="og:description" content="本文是针对《iOS Core Animation: Advanced Techniques》相对重要知识点进行的总结笔记，插图和具体释义请参照原书 图层树深刻理解图层与视图 视图（UIView）是在屏幕上显示的，能够拦截用户行为（如手势输入）的矩形块，视图具有层级关系并可互相嵌套。 图层（CALayer）和视图（UIView）在概念上类似，和视图最大的不同，是图层不处理用户行为。 在iOS和Mac">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-05T12:50:51.179Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS Core Animation - Advanced Techniques-学习笔记（一）">
+<meta name="twitter:description" content="本文是针对《iOS Core Animation: Advanced Techniques》相对重要知识点进行的总结笔记，插图和具体释义请参照原书 图层树深刻理解图层与视图 视图（UIView）是在屏幕上显示的，能够拦截用户行为（如手势输入）的矩形块，视图具有层级关系并可互相嵌套。 图层（CALayer）和视图（UIView）在概念上类似，和视图最大的不同，是图层不处理用户行为。 在iOS和Mac">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/01/iOS Core Animation- Advanced Techniques-学习笔记（一）/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS Core Animation - Advanced Techniques-学习笔记（一） | Paradise of Web</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Paradise of Web</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">不会弹吉他的贝斯手，不是好程序员</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/01/iOS Core Animation- Advanced Techniques-学习笔记（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tian Xueweii">
+      <meta itemprop="description" content="tianxueweii's iOS blog">
+      <meta itemprop="image" content="/images/default_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Paradise of Web">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS Core Animation - Advanced Techniques-学习笔记（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-01 20:41:37" itemprop="dateCreated datePublished" datetime="2018-11-01T20:41:37+08:00">2018-11-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-05 20:50:51" itemprop="dateModified" datetime="2018-11-05T20:50:51+08:00">2018-11-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是针对《iOS Core Animation: Advanced Techniques》相对重要知识点进行的总结笔记，插图和具体释义请参照原书</p>
+<h2 id="图层树"><a href="#图层树" class="headerlink" title="图层树"></a>图层树</h2><h3 id="深刻理解图层与视图"><a href="#深刻理解图层与视图" class="headerlink" title="深刻理解图层与视图"></a>深刻理解图层与视图</h3><ul>
+<li>视图（UIView）是在屏幕上显示的，能够拦截用户行为（如手势输入）的矩形块，视图具有层级关系并可互相嵌套。</li>
+<li>图层（CALayer）和视图（UIView）在概念上类似，和视图最大的不同，是图层不处理用户行为。</li>
+<li>在iOS和MacOS两个平台上，事件和用户交互有很多不同，UIKit和AppKit就是基于CoreAnimation针对两个平台的不同处理框架。</li>
+</ul>
+<h3 id="为什么要使用图层"><a href="#为什么要使用图层" class="headerlink" title="为什么要使用图层"></a>为什么要使用图层</h3><ul>
+<li>UIView的接口优美而简洁，但这种简单会造成灵活性上的缺陷。</li>
+<li>UIView没有暴露出的CALayer一些功能：<ul>
+<li>阴影，圆角，带颜色的边框</li>
+<li>3D变换</li>
+<li>非矩形范围</li>
+<li>透明遮罩</li>
+<li>多级非线性动画</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何使用图层"><a href="#如何使用图层" class="headerlink" title="如何使用图层"></a>如何使用图层</h3><ul>
+<li>UIView视图类带有一个CALayer属性可直接使用</li>
+<li>把QuartzCore引入到项目，然后调用CALayer初始化方法创建</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ViewController.m</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad&#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line">    <span class="comment">//create sublayer</span></span><br><span class="line">    <span class="built_in">CALayer</span> *sublayer = [<span class="built_in">CALayer</span> layer];</span><br><span class="line">    sublayer.frame = <span class="built_in">CGRectMake</span>(<span class="number">50.0</span>f, <span class="number">50.0</span>f, <span class="number">100.0</span>f, <span class="number">100.0</span>f);</span><br><span class="line">    sublayer.backgroundColor = [<span class="built_in">UIColor</span> blueColor].CGColor;</span><br><span class="line">    <span class="comment">//add it to view</span></span><br><span class="line">    [<span class="keyword">self</span>.view.layer addSublayer:sublayer];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="寄宿图"><a href="#寄宿图" class="headerlink" title="寄宿图"></a>寄宿图</h2><h3 id="contents属性"><a href="#contents属性" class="headerlink" title="contents属性"></a>contents属性</h3><ul>
+<li>CALayer有一个属性<code>contents</code>，它是id类型的，在iOS平台上需要被赋值的类型是<code>CGImageRef</code>，一个指向CGImage结构的指针。在Mac平台上需要被赋值<code>NSImage</code>对象</li>
+<li><code>contents</code>属性能够让图层不仅展示一个背景色，可以展示一个图片</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ViewController.m</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad</span><br><span class="line">&#123;</span><br><span class="line">  [super viewDidLoad]; //load an image</span><br><span class="line">  UIImage *image = [UIImage imageNamed:@&quot;xxx.png&quot;];</span><br><span class="line"></span><br><span class="line">  //add it directly to our view&apos;s layer</span><br><span class="line">  self.layerView.layer.contents = (__bridge id)image.CGImage;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="contentGravity属性"><a href="#contentGravity属性" class="headerlink" title="contentGravity属性"></a>contentGravity属性</h3><ul>
+<li>类似于UIImageView的<code>contentMode</code>，在CALayer中对应的属性叫做<code>contentsGravity</code>，它是一个NSString类型，可选常量：<ul>
+<li><code>kCAGravityCenter</code>        水平垂直居中</li>
+<li><code>kCAGravityTop</code>            水平居中，顶部边缘为0</li>
+<li><code>kCAGravityBottom</code>        水平居中，底部边缘为0</li>
+<li><code>kCAGravityLeft</code>            垂直居中，左部边缘为0</li>
+<li><code>kCAGravityRight</code>            垂直居中，右部边缘为0</li>
+<li><code>kCAGravityTopLeft</code>        左上边缘为0</li>
+<li><code>kCAGravityTopRight</code>        右上边缘为0</li>
+<li><code>kCAGravityBottomLeft</code>    左下边缘为0</li>
+<li><code>kCAGravityBottomRight</code>    右下边缘为0</li>
+<li><code>kCAGravityResize</code>        根据图层大小拉伸</li>
+<li><code>kCAGravityResizeAspect</code>            整个图片等比渲染全部展示到图层，可能会有留白</li>
+<li><code>kCAGravityResizeAspectFill</code>    整个图片等比渲染铺满图层，图片可能被截断</li>
+</ul>
+</li>
+</ul>
+<h3 id="contentsScale属性"><a href="#contentsScale属性" class="headerlink" title="contentsScale属性"></a>contentsScale属性</h3><ul>
+<li><code>contentsScale</code>属性定义了寄宿图的像素尺寸和视图大小的比例，默认情况下它是一个值为1.0的浮点数。</li>
+<li>这个属性在开发中没有找到具体的应用场景，不建议直接使用</li>
+</ul>
+<h3 id="maskToBounds属性"><a href="#maskToBounds属性" class="headerlink" title="maskToBounds属性"></a>maskToBounds属性</h3><ul>
+<li>将超出图层边界的内容截断</li>
+<li>【注意】设置阴影也会被这个属性截断，因为阴影是绘制在图层外的</li>
+</ul>
+<h3 id="contentsRect属性"><a href="#contentsRect属性" class="headerlink" title="contentsRect属性"></a>contentsRect属性</h3><ul>
+<li>这个属性允许我们选择寄宿图的一个子域，这个属性比<code>contentGravity</code>更灵活</li>
+<li>和<code>bounds</code>，<code>frame</code>不同，<code>contentsRect</code>不是按点来计算的，它使用了单位坐标，单位坐标指定在0到1之间，是一个相对值（像素和点就是绝对值）</li>
+<li>默认的<code>contentsRect</code>是{0, 0, 1, 1}，意味着整个图片可见</li>
+<li>通过这个属性，我们可以实现Image Sprites（图片拼合技术），图片拼合后可以打包整合到一张大图上一次性载入。相比多次载入不同的图片，这样做能够带来很多方面的好处：内存使用，载入时间，渲染性能等等。</li>
+<li>图片拼合技术在游戏中应用较多，如一段连续的奔跑动画🏃</li>
+</ul>
+<h3 id="contentsCenter属性"><a href="#contentsCenter属性" class="headerlink" title="contentsCenter属性"></a>contentsCenter属性</h3><ul>
+<li><code>contentsCenter</code>是一个CGRect结构，它定义了一个固定的边框和一个在图层上可拉伸的区域。</li>
+<li>它的工作效果和UIImage里的<code>-resizableImageWithCapInsets:</code>方法效果非常类似</li>
+<li>在开发中目前还没有实际运用到它，应用后更新使用场景</li>
+</ul>
+<h3 id="视图-drawRect-方法"><a href="#视图-drawRect-方法" class="headerlink" title="视图-drawRect:方法"></a>视图-drawRect:方法</h3><ul>
+<li>设置寄宿图的方法，不止有给<code>contents</code>属性赋值这种方式，还能够通过继承UIView并实现<code>-drawRect:</code>方法来自定义绘制</li>
+<li>寄宿图不是必须的，但是只要UIView检测到<code>-drawRect:</code>，那么系统就会为这个视图图层分配一个寄宿图，该寄宿图的尺寸等于视图大小乘以 <code>contentsScale</code>的值</li>
+<li>如果不需要寄宿图，<code>-drawRect:</code>请不要实现，会浪费资源</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Core-Animation/" rel="tag"># Core Animation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/14/JavaScript异步和事件循环机制/" rel="next" title="JavaScript异步和事件循环机制">
+                <i class="fa fa-chevron-left"></i> JavaScript异步和事件循环机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/03/iOS Core Animation- Advanced Techniques-学习笔记（二）/" rel="prev" title="iOS Core Animation - Advanced Techniques-学习笔记（二）">
+                iOS Core Animation - Advanced Techniques-学习笔记（二） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/default_avatar.gif"
+                alt="Tian Xueweii" />
+            
+              <p class="site-author-name" itemprop="name">Tian Xueweii</p>
+              <p class="site-description motion-element" itemprop="description">tianxueweii's iOS blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tianxueweii" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#图层树"><span class="nav-number">1.</span> <span class="nav-text">图层树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#深刻理解图层与视图"><span class="nav-number">1.1.</span> <span class="nav-text">深刻理解图层与视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用图层"><span class="nav-number">1.2.</span> <span class="nav-text">为什么要使用图层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用图层"><span class="nav-number">1.3.</span> <span class="nav-text">如何使用图层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寄宿图"><span class="nav-number">2.</span> <span class="nav-text">寄宿图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#contents属性"><span class="nav-number">2.1.</span> <span class="nav-text">contents属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contentGravity属性"><span class="nav-number">2.2.</span> <span class="nav-text">contentGravity属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contentsScale属性"><span class="nav-number">2.3.</span> <span class="nav-text">contentsScale属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#maskToBounds属性"><span class="nav-number">2.4.</span> <span class="nav-text">maskToBounds属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contentsRect属性"><span class="nav-number">2.5.</span> <span class="nav-text">contentsRect属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contentsCenter属性"><span class="nav-number">2.6.</span> <span class="nav-text">contentsCenter属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视图-drawRect-方法"><span class="nav-number">2.7.</span> <span class="nav-text">视图-drawRect:方法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tian Xueweii</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

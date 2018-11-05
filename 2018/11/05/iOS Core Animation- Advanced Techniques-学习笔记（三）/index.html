@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="变换仿射变换 UIView的transform属性，用于视图在二维空间做旋转，缩放和平移 仿射变换的定义，是指无论变换矩阵用什么值，图层中平行的两条线在变换之后仍然保持平行 Core Graphics提供的实例化仿射变换的方法 CGAffineTransformMakeRotation(CGFloat angle) // 旋转 CGAffineTransformMakeScale(CGFloat">
+<meta name="keywords" content="iOS,Core Animation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Core Animation - Advanced Techniques-学习笔记（三）">
+<meta property="og:url" content="http://yoursite.com/2018/11/05/iOS Core Animation- Advanced Techniques-学习笔记（三）/index.html">
+<meta property="og:site_name" content="Paradise of Web">
+<meta property="og:description" content="变换仿射变换 UIView的transform属性，用于视图在二维空间做旋转，缩放和平移 仿射变换的定义，是指无论变换矩阵用什么值，图层中平行的两条线在变换之后仍然保持平行 Core Graphics提供的实例化仿射变换的方法 CGAffineTransformMakeRotation(CGFloat angle) // 旋转 CGAffineTransformMakeScale(CGFloat">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-05T12:48:48.916Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS Core Animation - Advanced Techniques-学习笔记（三）">
+<meta name="twitter:description" content="变换仿射变换 UIView的transform属性，用于视图在二维空间做旋转，缩放和平移 仿射变换的定义，是指无论变换矩阵用什么值，图层中平行的两条线在变换之后仍然保持平行 Core Graphics提供的实例化仿射变换的方法 CGAffineTransformMakeRotation(CGFloat angle) // 旋转 CGAffineTransformMakeScale(CGFloat">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/05/iOS Core Animation- Advanced Techniques-学习笔记（三）/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS Core Animation - Advanced Techniques-学习笔记（三） | Paradise of Web</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Paradise of Web</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">不会弹吉他的贝斯手，不是好程序员</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/05/iOS Core Animation- Advanced Techniques-学习笔记（三）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tian Xueweii">
+      <meta itemprop="description" content="tianxueweii's iOS blog">
+      <meta itemprop="image" content="/images/default_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Paradise of Web">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS Core Animation - Advanced Techniques-学习笔记（三）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-05 20:41:37 / 修改时间：20:48:48" itemprop="dateCreated datePublished" datetime="2018-11-05T20:41:37+08:00">2018-11-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="变换"><a href="#变换" class="headerlink" title="变换"></a>变换</h2><h3 id="仿射变换"><a href="#仿射变换" class="headerlink" title="仿射变换"></a>仿射变换</h3><ul>
+<li>UIView的<code>transform</code>属性，用于视图在二维空间做旋转，缩放和平移</li>
+<li>仿射变换的定义，是指无论变换矩阵用什么值，图层中平行的两条线在变换之后仍然保持平行</li>
+<li>Core Graphics提供的实例化仿射变换的方法<ul>
+<li>CGAffineTransformMakeRotation(CGFloat angle) // 旋转</li>
+<li>CGAffineTransformMakeScale(CGFloat sx, CGFloat sy) // 缩放</li>
+<li>CGAffineTransformMakeTranslation(CGFloat tx, CGFloat ty) // 平移</li>
+</ul>
+</li>
+<li>CALayer也有一个<code>transform</code>属性，但它的类型是CATransform3D，而不是CGAffineTransform</li>
+<li>Core Graphics提供了在之前变换的基础上继续变换的方法<ul>
+<li>CGAffineTransformRotate(CGAffineTransform t, CGFloat angle)</li>
+<li>CGAffineTransformScale(CGAffineTransform t, CGFloat sx, CGFloat sy)</li>
+<li>CGAffineTransformTranslate(CGAffineTransform t, CGFloat tx, CGFloat ty)</li>
+</ul>
+</li>
+<li>以及一个单位矩阵常量CGAffineTransformIdentity</li>
+<li>我们可以利用这些函数，在必要的时候组合一个更加复杂的变化，这样的实现方式，是优雅的</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    //create a new transform</span><br><span class="line">    CGAffineTransform transform = CGAffineTransformIdentity; </span><br><span class="line">    //scale by 50%</span><br><span class="line">    transform = CGAffineTransformScale(transform, 0.5, 0.5);</span><br><span class="line">    //rotate by 30 degrees</span><br><span class="line">    transform = CGAffineTransformRotate(transform, M_PI / 180.0 * 30.0);</span><br><span class="line">    //translate by 200 points</span><br><span class="line">    transform = CGAffineTransformTranslate(transform, 200, 0);</span><br><span class="line">    //apply transform to layer</span><br><span class="line">    self.layerView.layer.affineTransform = transform;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3D变换"><a href="#3D变换" class="headerlink" title="3D变换"></a>3D变换</h3><ul>
+<li>和CGAffineTransform类似，CATransform3D也是一个矩阵，但是和2x3的矩阵不同，CATransform3D是一个可以在3维空间内做变换的4x4的矩阵，我们要关注zPosition</li>
+<li><p>3D变换的方法</p>
+<ul>
+<li>CATransform3DMakeRotation(CGFloat angle, CGFloat x, CGFloat y, CGFloat z)</li>
+<li>CATransform3DMakeScale(CGFloat sx, CGFloat sy, CGFloat sz) </li>
+<li><p>CATransform3DMakeTranslation(Gloat tx, CGFloat ty, CGFloat tz) </p>
+<blockquote>
+<p>与仿射变化的旋转不同，CATransform3DMakeRotation是绕某一个（x,y,z）轴进行旋转</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="透视效果"><a href="#透视效果" class="headerlink" title="透视效果"></a>透视效果</h4><ul>
+<li>三维空间中，当物体原理我们时，会看起来比较小，远处的物体和近处的物体存在不同的缩放比例</li>
+<li>为了实现透视效果，我们需要修改<code>m34</code>值，<code>m34</code>的默认值是0，我们可以通过设置<code>m34</code>为（-1.0 / d）来实现透视效果，d代表了想象中视角相机和屏幕之间的距离，以像素为单位，通常500~1000就可以了。代码如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    //create a new transform</span><br><span class="line">    CATransform3D transform = CATransform3DIdentity;</span><br><span class="line">    //apply perspective</span><br><span class="line">    transform.m34 = - 1.0 / 500.0;</span><br><span class="line">    //rotate by 45 degrees along the Y axis</span><br><span class="line">    transform = CATransform3DRotate(transform, M_PI_4, 0, 1, 0);</span><br><span class="line">    //apply to layer</span><br><span class="line">    self.layerView.layer.transform = transform;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="灭点"><a href="#灭点" class="headerlink" title="灭点"></a>灭点</h4><ul>
+<li>当在透视角度绘图的时候，远离相机视角的物体将会变小变远，当远离到一个极限距离，它们可能就缩成了一个点，于是所有的物体最后都汇聚消失在同一个点。这个点叫灭点</li>
+<li>Core Animation定义的这个点位于变换前<code>anchorPoint</code>的位置</li>
+<li>当一个图层有多个3D变换的子图层，我们要想让整个视图绘制的更有3D效果，应该首先把它们都放置于屏幕中央，然后通过平移来把它移动到指定位置（而不是直接改变它的position），这样所有的3D图层都共享一个灭点</li>
+</ul>
+<h4 id="sublayerTransform属性"><a href="#sublayerTransform属性" class="headerlink" title="sublayerTransform属性"></a>sublayerTransform属性</h4><ul>
+<li>如果图层有多个子图层都要做3D变换，那就要分别对<code>m34</code>进行设置，CALayer有一个属性叫做<code>sublayerTransform</code>，这个变换会作用于所有子图层</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    //apply perspective transform to container</span><br><span class="line">    //容器视图变换，perspective将会影响layerView1和layerView2</span><br><span class="line">    CATransform3D perspective = CATransform3DIdentity;</span><br><span class="line">    perspective.m34 = - 1.0 / 500.0;</span><br><span class="line">    self.containerView.layer.sublayerTransform = perspective;</span><br><span class="line">   </span><br><span class="line">    //rotate layerView1 by 45 degrees along the Y axis</span><br><span class="line">    CATransform3D transform1 = CATransform3DMakeRotation(M_PI_4, 0, 1, 0);</span><br><span class="line">    self.layerView1.layer.transform = transform1;</span><br><span class="line">   </span><br><span class="line">    //rotate layerView2 by 45 degrees along the Y axis</span><br><span class="line">    CATransform3D transform2 = CATransform3DMakeRotation(-M_PI_4, 0, 1, 0);</span><br><span class="line">    self.layerView2.layer.transform = transform2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="图层的背面"><a href="#图层的背面" class="headerlink" title="图层的背面"></a>图层的背面</h4><ul>
+<li>图层是双面绘制的，反面是一个镜像图片，这并不是一个很好的特性，会给用户造成困扰，同时也可能造成系统资源的浪费，试想我们不想看到背面，那为什么还要浪费GPU绘制它们？</li>
+<li><code>doubleSided</code>属性，用来控制图层背面是否绘制，默认为YES</li>
+</ul>
+<h2 id="专用图层"><a href="#专用图层" class="headerlink" title="专用图层"></a>专用图层</h2><p>CALayer类具有一些非常有用的绘图和动画功能。但Core Animation不仅作用于图片和颜色，CALayer拓展了其他一些专用于某种功能的子类，以增强Core Animation的绘图能力。这里学习总结了几个常用的专用图层，其他的仅作了解</p>
+<h3 id="CAShapeLayer-形状图层"><a href="#CAShapeLayer-形状图层" class="headerlink" title="CAShapeLayer - 形状图层"></a>CAShapeLayer - 形状图层</h3><ul>
+<li>阴影可以使用CGPath来构建轮廓，图层也可以用这种方式构建</li>
+<li>CAShapeLayer是一个通过矢量绘图的图层子类</li>
+<li>比较推荐的方式是使用UIBezierPath类来帮助创建图层，这样我们不用考虑人工释放CGPath资源</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 利用CAShapeLayer新建图层绘制一个火柴人</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">  [super viewDidLoad];</span><br><span class="line">  //create path</span><br><span class="line">  UIBezierPath *path = [[UIBezierPath alloc] init];</span><br><span class="line">  [path moveToPoint:CGPointMake(175, 100)];</span><br><span class="line">  ￼</span><br><span class="line">  [path addArcWithCenter:CGPointMake(150, 100) radius:25 startAngle:0 endAngle:2*M_PI clockwise:YES];</span><br><span class="line">  [path moveToPoint:CGPointMake(150, 125)];</span><br><span class="line">  [path addLineToPoint:CGPointMake(150, 175)];</span><br><span class="line">  [path addLineToPoint:CGPointMake(125, 225)];</span><br><span class="line">  [path moveToPoint:CGPointMake(150, 175)];</span><br><span class="line">  [path addLineToPoint:CGPointMake(175, 225)];</span><br><span class="line">  [path moveToPoint:CGPointMake(100, 150)];</span><br><span class="line">  [path addLineToPoint:CGPointMake(200, 150)];</span><br><span class="line"></span><br><span class="line">  //create shape layer</span><br><span class="line">  CAShapeLayer *shapeLayer = [CAShapeLayer layer];</span><br><span class="line">  shapeLayer.strokeColor = [UIColor redColor].CGColor;</span><br><span class="line">  shapeLayer.fillColor = [UIColor clearColor].CGColor;</span><br><span class="line">  shapeLayer.lineWidth = 5;</span><br><span class="line">  shapeLayer.lineJoin = kCALineJoinRound;</span><br><span class="line">  shapeLayer.lineCap = kCALineCapRound;</span><br><span class="line">  shapeLayer.path = path.CGPath;</span><br><span class="line">  //add it to our view</span><br><span class="line">  [self.containerView.layer addSublayer:shapeLayer];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>CAShapeLayer还有一个比较常用的用法，是绘制矩形的指定圆角，UIBezierPath有一个自动绘制圆角矩形的构造方法</li>
+<li>目前常用的做法是在UIView的分类添加以下方法，创建图层蒙版</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)addRoundedCorners:(UIRectCorner)corners radius:(CGFloat)radii&#123;</span><br><span class="line">    </span><br><span class="line">    UIBezierPath* rounded = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(radii, radii)];</span><br><span class="line">    CAShapeLayer* shape = [[CAShapeLayer alloc] init];</span><br><span class="line">    [shape setPath:rounded.CGPath];</span><br><span class="line">    </span><br><span class="line">    self.layer.mask = shape;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这么做有两个问题，一是当我们同时需要创建指定圆角和阴影时，不可避免要添加一个新的Container图层；二是动态修改<code>frame.size</code>时，蒙版路径并不会更新（准确说<code>pathRect</code>就是初始<code>bounds</code>值）</p>
+</blockquote>
+<blockquote>
+<p>在书中提出【我们可以把CAShapeLayer作为视图的宿主图层，而不是添加一个子视图】。经过实验，一个可行的方案是，我们重写UIView的<code>+layerClass</code>方法，返回指定图层类<code>CAShapeLayer.class</code>，并在图层布局的时候指定path，注意，如果要指定CAShapeLayer背景图层着色，要使用<code>fillColor</code>属性而不能直接写<code>backgroundColor</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">+ (Class)layerClass&#123;</span><br><span class="line">    return CAShapeLayer.class;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)layoutSublayersOfLayer:(CALayer *)layer&#123;</span><br><span class="line">    [super layoutSublayersOfLayer:layer];</span><br><span class="line">    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:_corners cornerRadii:CGSizeMake(10, 10)];</span><br><span class="line">    _shapeLayer.path = path.CGPath;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFrame:(CGRect)frame&#123;</span><br><span class="line">    self = [super initWithFrame:frame];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        //custom layer</span><br><span class="line">        _shapeLayer = (CAShapeLayer *)self.layer;</span><br><span class="line">        _corners = UIRectCornerTopRight | UIRectCornerBottomRight | UIRectCornerBottomLeft;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CAGradientLayer-渐变图层"><a href="#CAGradientLayer-渐变图层" class="headerlink" title="CAGradientLayer - 渐变图层"></a>CAGradientLayer - 渐变图层</h3><ul>
+<li>CAGradientLayer是用来生成两种或更多颜色平滑渐变的。通常我们绘制渐变图，会用Core Graphics的<code>CGContextDrawLinearGradient()</code>方法生成一张图片，但相较于这种方式，CAGradientLayer使用了硬件加速使整个流程更加效率，并且代码上更加简洁优雅</li>
+<li>创建一个简单的渐变图层，此处注意接收渐变色彩数组的类型是CGColorRef，为了保证编译正常需要bridge转换</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">  [super viewDidLoad];</span><br><span class="line">  //create gradient layer and add it to our container view</span><br><span class="line">  CAGradientLayer *gradientLayer = [CAGradientLayer layer];</span><br><span class="line">  gradientLayer.frame = self.containerView.bounds;</span><br><span class="line">  [self.containerView.layer addSublayer:gradientLayer];</span><br><span class="line"></span><br><span class="line">  //set gradient colors</span><br><span class="line">  gradientLayer.colors = @[(__bridge id)[UIColor redColor].CGColor, (__bridge id)[UIColor blueColor].CGColor];</span><br><span class="line"></span><br><span class="line">  //set gradient start and end points</span><br><span class="line">  gradientLayer.startPoint = CGPointMake(0, 0);</span><br><span class="line">  gradientLayer.endPoint = CGPointMake(1, 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CAReplicatorLayer-重复图层"><a href="#CAReplicatorLayer-重复图层" class="headerlink" title="CAReplicatorLayer - 重复图层"></a>CAReplicatorLayer - 重复图层</h3><ul>
+<li><code>CAReplicatorLayer</code>的目的是为了高效生成许多相似的图层<blockquote>
+<p>第一次了解这个图层时，感觉似乎在工作中不会经常使用，但书中举了一个很有趣的例子。我们可以用它来实现一个镜面反射的效果</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="CAEmitterLayer-粒子图层"><a href="#CAEmitterLayer-粒子图层" class="headerlink" title="CAEmitterLayer - 粒子图层"></a>CAEmitterLayer - 粒子图层</h3><ul>
+<li><code>CAEmitterLayer</code>是一个高性能的粒子引擎，被用来创建实时例子动画如：烟雾，火，雨等等这些效果。实际应用比较广泛，比如微信的红包雨，直播间的小❤❤<blockquote>
+<p>这是一个很实用的图层，之后我会专门写一篇博客来讲讲他的使用</p>
+</blockquote>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Core-Animation/" rel="tag"># Core Animation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/03/iOS Core Animation- Advanced Techniques-学习笔记（二）/" rel="next" title="iOS Core Animation - Advanced Techniques-学习笔记（二）">
+                <i class="fa fa-chevron-left"></i> iOS Core Animation - Advanced Techniques-学习笔记（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/default_avatar.gif"
+                alt="Tian Xueweii" />
+            
+              <p class="site-author-name" itemprop="name">Tian Xueweii</p>
+              <p class="site-description motion-element" itemprop="description">tianxueweii's iOS blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tianxueweii" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#变换"><span class="nav-number">1.</span> <span class="nav-text">变换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#仿射变换"><span class="nav-number">1.1.</span> <span class="nav-text">仿射变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3D变换"><span class="nav-number">1.2.</span> <span class="nav-text">3D变换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#透视效果"><span class="nav-number">1.2.1.</span> <span class="nav-text">透视效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#灭点"><span class="nav-number">1.2.2.</span> <span class="nav-text">灭点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sublayerTransform属性"><span class="nav-number">1.2.3.</span> <span class="nav-text">sublayerTransform属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图层的背面"><span class="nav-number">1.2.4.</span> <span class="nav-text">图层的背面</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#专用图层"><span class="nav-number">2.</span> <span class="nav-text">专用图层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CAShapeLayer-形状图层"><span class="nav-number">2.1.</span> <span class="nav-text">CAShapeLayer - 形状图层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAGradientLayer-渐变图层"><span class="nav-number">2.2.</span> <span class="nav-text">CAGradientLayer - 渐变图层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAReplicatorLayer-重复图层"><span class="nav-number">2.3.</span> <span class="nav-text">CAReplicatorLayer - 重复图层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAEmitterLayer-粒子图层"><span class="nav-number">2.4.</span> <span class="nav-text">CAEmitterLayer - 粒子图层</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tian Xueweii</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
