@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="经过之前学习，对于Core Animation除了动画外的特性有了一些了解。本篇开始，涉及到了框架最主要特性动画的相关知识 隐式动画事务 Core Animation基于一个假设构建，屏幕上的任何东西都可以（或可能）做动画。动画不需要手动打开，但是要明确关闭，否则会一直存在  这里会有一个问题，为什么更改UIView的属性，不会产生任何动画效果，若有需要必须用animation块包裹呢   对于C">
+<meta name="keywords" content="iOS,Core Animation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Core Animation - Advanced Techniques-学习笔记（四）">
+<meta property="og:url" content="http://yoursite.com/2018/11/14/iOS Core Animation- Advanced Techniques-学习笔记（四）/index.html">
+<meta property="og:site_name" content="Paradise of Web">
+<meta property="og:description" content="经过之前学习，对于Core Animation除了动画外的特性有了一些了解。本篇开始，涉及到了框架最主要特性动画的相关知识 隐式动画事务 Core Animation基于一个假设构建，屏幕上的任何东西都可以（或可能）做动画。动画不需要手动打开，但是要明确关闭，否则会一直存在  这里会有一个问题，为什么更改UIView的属性，不会产生任何动画效果，若有需要必须用animation块包裹呢   对于C">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-13T16:45:56.900Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS Core Animation - Advanced Techniques-学习笔记（四）">
+<meta name="twitter:description" content="经过之前学习，对于Core Animation除了动画外的特性有了一些了解。本篇开始，涉及到了框架最主要特性动画的相关知识 隐式动画事务 Core Animation基于一个假设构建，屏幕上的任何东西都可以（或可能）做动画。动画不需要手动打开，但是要明确关闭，否则会一直存在  这里会有一个问题，为什么更改UIView的属性，不会产生任何动画效果，若有需要必须用animation块包裹呢   对于C">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/14/iOS Core Animation- Advanced Techniques-学习笔记（四）/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS Core Animation - Advanced Techniques-学习笔记（四） | Paradise of Web</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Paradise of Web</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">不会弹吉他的贝斯手，不是好程序员</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/14/iOS Core Animation- Advanced Techniques-学习笔记（四）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tian Xueweii">
+      <meta itemprop="description" content="tianxueweii's iOS blog">
+      <meta itemprop="image" content="/images/default_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Paradise of Web">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS Core Animation - Advanced Techniques-学习笔记（四）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-14 00:39:17 / 修改时间：00:45:56" itemprop="dateCreated datePublished" datetime="2018-11-14T00:39:17+08:00">2018-11-14</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>经过之前学习，对于Core Animation除了动画外的特性有了一些了解。本篇开始，涉及到了框架最主要特性动画的相关知识</p>
+<h2 id="隐式动画"><a href="#隐式动画" class="headerlink" title="隐式动画"></a>隐式动画</h2><h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><ul>
+<li><p>Core Animation基于一个假设构建，屏幕上的任何东西都可以（或可能）做动画。动画不需要手动打开，但是要明确关闭，否则会一直存在</p>
+<blockquote>
+<p>这里会有一个问题，为什么更改UIView的属性，不会产生任何动画效果，若有需要必须用animation块包裹呢</p>
+</blockquote>
+</li>
+<li><p>对于CALayer属性更改不需要特意开启动画效果，例如创建一个色块，然后随机改变它的颜色，你会发现图层的颜色是平滑过渡的，而不是跳变，这个过程的持续时间是0.25s</p>
+<blockquote>
+<p>因为我们并未指定特定的动画类型，即可实现动画效果，这就是之所以叫隐式动画。隐式动画执行时间、执行内容等由CATransaction类进行管理，这个类不能实例化，但可以用<code>+begin</code>和<code>+commit</code>控制入栈和出栈</p>
+</blockquote>
+</li>
+<li><p>每一次Runloop周期，Core Animation都会开始一次新的CATransaction，即使不显示使用<code>+begin</code>入栈，在任何一次的Runloop循环中，属性的改变都会被集中起来，做一次<code>animationDuration</code>时间的动画</p>
+<blockquote>
+<p>注意：若使用<code>+setAnimationDuration:</code>方法来修改时间，最好压入一个新的Transaction，再修改时间，因为在当前事务的时间可能会导致同一时刻别的动画（屏幕旋转）时长被修改<br>回到之前的问题，UIView默认关闭了隐式动画，但提供了<code>+animateWithDuration:animations:</code>事务块，这和我们对新建事务出入栈的写法是不是类似呢。其实他们是在做一样的事</p>
+</blockquote>
+</li>
+<li><p>UIView在动画块结束时允许提供一个完成动作，它的实现原理，其实就是使用了事务的<code>+setCompletionBlock:</code>方法</p>
+</li>
+</ul>
+<h3 id="图层行为"><a href="#图层行为" class="headerlink" title="图层行为"></a>图层行为</h3><ul>
+<li><p>首先明确一个概念，我们把改变属性时CALayer自动应用的动画称作行为。我们知道UIView对于视图属性的修改，是即时响应的，也就是说UIKit禁用了关联图层的隐式动画，要了解UIKit怎么禁用的需要知道隐式动画的实现，实质上是以下几个步骤</p>
+<ul>
+<li>图层检查CALayerDelegate协议是否实现了<code>-actionForLayer:forKey</code>方法，如果设置了则直接返回结果</li>
+<li>如果没有实现协议或是<code>-actionForLayer:forKey</code>方法，图层继续检查包含属性名称对应<code>行为</code>的映射字典<code>actions</code></li>
+<li>如果<code>actions</code>字典没有包含对应的<code>行为</code>，图层会接着在它的<code>style</code>字典搜索属性名</li>
+<li>如果<code>style</code>字典也找不到对应的<code>行为</code>，那么图层将会直接调用定义了每个属性的标准<code>行为</code>方法<code>-defaultActionForKey:</code></li>
+</ul>
+</li>
+<li><p>通过以上几个Core Animation响应行为的流程，我们可以发现，隐式动画实际上是通过框架定义的标准行为方法<code>-defaultActionForKey:</code>返回实现的</p>
+</li>
+<li>UIView对实现了对应关联图层的CALayerDelegate协议，如果属性变化不在动画块中，则UIView对所有图层行为返回了nil</li>
+<li>禁用隐式动画还有一个方法，是使用事务类CATransacition的<code>+setDisableActions:</code>方法</li>
+</ul>
+<blockquote>
+<p>总结：</p>
+<ol>
+<li>UIView关联的图层禁用了隐式动画，对这种图层做动画的唯一办法就是使用UIView的动画函数（而不是依赖CATransaction），或者继承UIView，并覆盖<code>-actionForLayer:forKey:</code>方法，或者直接创建一个显式动画</li>
+<li>对于单独存在的图层，我们可以通过实现图层的<code>-actionForLayer:forKey:</code>委托方法，或者提供一个<code>actions</code>字典来控制隐式动画</li>
+</ol>
+</blockquote>
+<h3 id="视觉呈现模型"><a href="#视觉呈现模型" class="headerlink" title="视觉呈现模型"></a>视觉呈现模型</h3><ul>
+<li><p>有经验的开发者可能接触过类似MVVM模型的Vue框架，当你在VM更改了M属性后，视图层会立即回应你的修改。回到CALayer，它的属性行为其实略微有些奇怪，当你改变一个图层的属性时，视图上并没有立即生效（可以自己打一个断点实验），而是一段时间后，通过渐变更新。</p>
+<blockquote>
+<p>通过之前的学习，我们现在可以容易的理解CALayer对属性渲染的流程，在更改属性后，runloop的下一个周期，会触发新的事务CATransaction，并查找这个属性的动画行为，如果未查到指定动画行为，则通过<code>-defaultActionForKey:</code>方法执行默认行为</p>
+</blockquote>
+</li>
+<li><p>其实，这就是一个微型的MVC模型，Core Animation扮演了一个控制器的角色，负责图层行为和事务设置去不断更新视图</p>
+</li>
+<li><p>在iOS中，屏幕每秒钟重绘60次（60fps）。如果动画时长比60分之一秒要长，Core Animation就需要在设置一次新值和新值生效之间，对屏幕上的图层进行重新组织。这意味着CALayer除了“真实”值（就是设置的值）之外，必须要知道当前显示在屏幕上的属性值的记录。<code>presentationLayer</code>记录了呈现图层的外观，可以通过这个属性获取屏幕上显示的真实值</p>
+<blockquote>
+<p>多数情况，我们不用访问呈现图层，但例如如果你想要知道，用户的触摸行为是否作用在运动中的图层，这时呈现图层会很有用</p>
+</blockquote>
+</li>
+<li><p>书中有一个例子，有一个矩形图层，当我们点击图层时改变颜色，当点击图层外侧时移动图层</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad&#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    //create a red layer</span><br><span class="line">    self.colorLayer = [CALayer layer];</span><br><span class="line">    self.colorLayer.frame = CGRectMake(0, 0, 100, 100);</span><br><span class="line">    self.colorLayer.position = CGPointMake(self.view.bounds.size.width / 2, self.view.bounds.size.height / 2);</span><br><span class="line">    self.colorLayer.backgroundColor = [UIColor redColor].CGColor;</span><br><span class="line">    [self.view.layer addSublayer:self.colorLayer];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event&#123;</span><br><span class="line">    //get the touch point</span><br><span class="line">    CGPoint point = [[touches anyObject] locationInView:self.view];</span><br><span class="line">    //check if we&apos;ve tapped the moving layer</span><br><span class="line">    if ([self.colorLayer.presentationLayer hitTest:point]) &#123;</span><br><span class="line">        //randomize the layer background color</span><br><span class="line">        CGFloat red = arc4random() / (CGFloat)INT_MAX;</span><br><span class="line">        CGFloat green = arc4random() / (CGFloat)INT_MAX;</span><br><span class="line">        CGFloat blue = arc4random() / (CGFloat)INT_MAX;</span><br><span class="line">        self.colorLayer.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0].CGColor;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //otherwise (slowly) move the layer to new position</span><br><span class="line">        [CATransaction begin];</span><br><span class="line">        [CATransaction setAnimationDuration:4.0];</span><br><span class="line">        self.colorLayer.position = point;</span><br><span class="line">        [CATransaction commit];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="显式动画"><a href="#显式动画" class="headerlink" title="显式动画"></a>显式动画</h2><p>CAAnimation是所有动画类的抽象父类，他提供了动画类的工厂方法，以及动画类所需协议。具体的动画行为我们需要实例化他的子类</p>
+<ul>
+<li>CAPropertyAnimation<ul>
+<li>CABasicAnimation</li>
+<li>CAKeyframeAnimation</li>
+</ul>
+</li>
+<li>CAAnimationGroup</li>
+<li>CATransition</li>
+</ul>
+<h3 id="CAPropertyAnimation-属性动画"><a href="#CAPropertyAnimation-属性动画" class="headerlink" title="CAPropertyAnimation - 属性动画"></a>CAPropertyAnimation - 属性动画</h3><ul>
+<li>属性动画通过指定CALayer的可动画属性名称赋值给<code>keyPath</code>属性，并设置相应的初始值和结束值，以达到动画效果。我们不用关心动画中的渲染实现，《熟练的艺术家》会帮我们完成动画流程渲染</li>
+<li><code>additive</code> 如果这个属性为YES，则动画所指定值以添加的方式计算并得到一个新的值，仿射变化也会适用</li>
+<li><code>cumulative</code> 下一次动画是否接着上一次动画，默认为NO</li>
+</ul>
+<h4 id="CABasicAnimation-基本动画"><a href="#CABasicAnimation-基本动画" class="headerlink" title="CABasicAnimation - 基本动画"></a>CABasicAnimation - 基本动画</h4><ul>
+<li>基本动画的实现非常简单，他定义三个状态值属性，控制动画前和动画后CALayer<code>keyPath</code>属性的状态<ul>
+<li>fromValue：keyPath相应属性的初始值</li>
+<li>toValue：keyPath相应属性的结束值</li>
+<li>byValue：keyPath相应属性的相对值</li>
+</ul>
+</li>
+<li>下面代码描述了使用基本动画改变图层背景色</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">IBAction</span>)changeColor</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//create a new random color</span></span><br><span class="line">    <span class="built_in">CGFloat</span> red = arc4random() / (<span class="built_in">CGFloat</span>)INT_MAX;</span><br><span class="line">    <span class="built_in">CGFloat</span> green = arc4random() / (<span class="built_in">CGFloat</span>)INT_MAX;</span><br><span class="line">    <span class="built_in">CGFloat</span> blue = arc4random() / (<span class="built_in">CGFloat</span>)INT_MAX;</span><br><span class="line">    <span class="built_in">UIColor</span> *color = [<span class="built_in">UIColor</span> colorWithRed:red green:green blue:blue alpha:<span class="number">1.0</span>];</span><br><span class="line">    <span class="comment">//create a basic animation</span></span><br><span class="line">    <span class="built_in">CABasicAnimation</span> *animation = [<span class="built_in">CABasicAnimation</span> animation];</span><br><span class="line">    animation.keyPath = <span class="string">@"backgroundColor"</span>;</span><br><span class="line">    animation.toValue = (__bridge <span class="keyword">id</span>)color.CGColor;</span><br><span class="line">    animation.delegate = <span class="keyword">self</span>;</span><br><span class="line">    <span class="comment">//apply animation to layer</span></span><br><span class="line">    [<span class="keyword">self</span>.colorLayer addAnimation:animation forKey:<span class="literal">nil</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>上述代码，在<code>fillMode=kCAFillModeForwards</code>及<code>removedOnComletion=NO</code>时，图层会保持动画执行后的状态，但是不要被视图渲染结果所欺骗，图层的属性值还是动画执行前的初始值，所以，我们在代码中还要实现<code>CAAnimationDelegate</code>的代理方法，更改图层的属性值</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)animationDidStop:(<span class="built_in">CABasicAnimation</span> *)anim finished:(<span class="built_in">BOOL</span>)flag</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//set the backgroundColor property to match animation toValue</span></span><br><span class="line">    [<span class="built_in">CATransaction</span> begin];</span><br><span class="line">    [<span class="built_in">CATransaction</span> setDisableActions:<span class="literal">YES</span>];</span><br><span class="line">    <span class="keyword">self</span>.colorLayer.backgroundColor = (__bridge <span class="built_in">CGColorRef</span>)anim.toValue;</span><br><span class="line">    [<span class="built_in">CATransaction</span> commit];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里我们要禁用当前隐式动画事务，不然赋值最终值还要再被隐式动画再渲染一遍</p>
+</blockquote>
+<ul>
+<li><p>不得不承认，显示地给图层添加<code>CABasicAnimation</code>动画，相较于直接添加隐式动画，只能说费力不讨好    </p>
+<h4 id="CAKeyframeAnimation-关键帧动画"><a href="#CAKeyframeAnimation-关键帧动画" class="headerlink" title="CAKeyframeAnimation - 关键帧动画"></a>CAKeyframeAnimation - 关键帧动画</h4></li>
+<li><p>关键帧动画依然作用于CALayer单一的一个属性，但他不限制于设置一个起始和结束的值，而是可以根据一连串随意的值来做动画。你只需要提供显著表现的帧值，Core Animation会在每帧之间平滑插入过度表现</p>
+</li>
+<li>一段简单的代码，表现了图层背景色在指定一系列颜色的变化</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">IBAction</span>)changeColor</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//create a keyframe animation</span></span><br><span class="line">    <span class="built_in">CAKeyframeAnimation</span> *animation = [<span class="built_in">CAKeyframeAnimation</span> animation];</span><br><span class="line">    animation.keyPath = <span class="string">@"backgroundColor"</span>;</span><br><span class="line">    animation.duration = <span class="number">2.0</span>;</span><br><span class="line">    animation.values = @[</span><br><span class="line">                         (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> blueColor].CGColor,</span><br><span class="line">                         (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> redColor].CGColor,</span><br><span class="line">                         (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> greenColor].CGColor,</span><br><span class="line">                         (__bridge <span class="keyword">id</span>)[<span class="built_in">UIColor</span> blueColor].CGColor ];</span><br><span class="line">    <span class="comment">//apply animation to layer</span></span><br><span class="line">    [<span class="keyword">self</span>.colorLayer addAnimation:animation forKey:<span class="literal">nil</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>但用数组来描述动画的行为并不直观，所以关键帧动画有另外一种方式指定动画，就是使用<code>path</code>属性，它是CGPath类型，我们可以使用Core Graphics来绘制运动轨迹，但使用UIBezierPath类来绘制动画会更加简单</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidLoad</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line">    <span class="comment">//create a path</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">//create the keyframe animation</span></span><br><span class="line">    <span class="built_in">CAKeyframeAnimation</span> *animation = [<span class="built_in">CAKeyframeAnimation</span> animation];</span><br><span class="line">    animation.keyPath = <span class="string">@"position"</span>;</span><br><span class="line">    animation.duration = <span class="number">4.0</span>;</span><br><span class="line">    animation.path = bezierPath.CGPath;</span><br><span class="line">    animation.rotationMode = kCAAnimationRotateAuto;</span><br><span class="line">    [shipLayer addAnimation:animation forKey:<span class="literal">nil</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意这里指定了<code>rotationMode</code>旋转模板为自动，这样图层会根据曲线切线自动旋转</p>
+</blockquote>
+<h3 id="CAAnimationGroup-动画组"><a href="#CAAnimationGroup-动画组" class="headerlink" title="CAAnimationGroup - 动画组"></a>CAAnimationGroup - 动画组</h3><ul>
+<li>属性动画仅作用于单一属性的变化，CAAnimationGroup可以将这些动画组合在一起，变成复合动画</li>
+<li>可以使用<code>animations</code>属性，数组内的所有动画对象都是并发进行的</li>
+<li>可以通过设置数组内动画对象的<code>beginTime</code>属性改变开始时间</li>
+</ul>
+<h3 id="CATransition-过渡动画"><a href="#CATransition-过渡动画" class="headerlink" title="CATransition - 过渡动画"></a>CATransition - 过渡动画</h3><ul>
+<li>属性动画只能对图层的可动画属性起作用，所以如果要动态改变（如图片）不能动画的属性，或者移除添加图层，属性动画将会失效</li>
+<li>过渡动画可以影响不能动画的属性，他首先展示之前的图层外观，然后通过指定的交换方式（type），平滑过渡到新的外观</li>
+<li>过渡动画通过<code>type</code>来定以动画效果，他是一个NSString类型<ul>
+<li>fade - kCATransitionFade 平滑淡化过渡(不支持过渡方向)</li>
+<li>moveIn - kCATransitionMoveIn 新视图移到旧视图上面</li>
+<li>push - kCATransitionPush 新视图把旧视图推出</li>
+<li>reveal - kCATransitionReveal 将旧视图移开显示下面的旧视图</li>
+<li>cube 立方体翻滚效果</li>
+<li>oglFlip 上下左右翻转效果</li>
+<li>suckEffect 收缩效果，如一块布被抽走(不支持过渡方向)</li>
+<li>rippleEffect 滴水效果(不支持过渡方向)</li>
+<li>pageCurl 向上翻页效果</li>
+<li>pageUnCurl 向下翻页效果</li>
+<li>cameraIrisHollowOpen 相机镜头打开效果(不支持过渡方向)</li>
+<li>cameraIrisHollowClose 相机镜头关上效果(不支持过渡方向)</li>
+</ul>
+</li>
+<li><code>subtype</code>属性指定动画的方向<ul>
+<li>kCATransitionFromRight </li>
+<li>kCATransitionFromLeft </li>
+<li>kCATransitionFromTop </li>
+<li>kCATransitionFromBottom</li>
+</ul>
+</li>
+<li><code>startProgress</code>动画起点(在整体动画的百分比)</li>
+<li><code>endProgress</code>动画终点(在整体动画的百分比)</li>
+<li>一个实例，切换UITabBarController标签时淡入淡出动画</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)tabBarController:(<span class="built_in">UITabBarController</span> *)tabBarController didSelectViewController:(<span class="built_in">UIViewController</span> *)viewController</span><br><span class="line">&#123;</span><br><span class="line">    ￼<span class="comment">//set up crossfade transition</span></span><br><span class="line">    <span class="built_in">CATransition</span> *transition = [<span class="built_in">CATransition</span> animation];</span><br><span class="line">    transition.type = kCATransitionFade;</span><br><span class="line">    <span class="comment">//apply transition to tab bar controller's view</span></span><br><span class="line">    [<span class="keyword">self</span>.tabBarController.view.layer addAnimation:transition forKey:<span class="literal">nil</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Core-Animation/" rel="tag"># Core Animation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/05/iOS Core Animation- Advanced Techniques-学习笔记（三）/" rel="next" title="iOS Core Animation - Advanced Techniques-学习笔记（三）">
+                <i class="fa fa-chevron-left"></i> iOS Core Animation - Advanced Techniques-学习笔记（三）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/default_avatar.gif"
+                alt="Tian Xueweii" />
+            
+              <p class="site-author-name" itemprop="name">Tian Xueweii</p>
+              <p class="site-description motion-element" itemprop="description">tianxueweii's iOS blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tianxueweii" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#隐式动画"><span class="nav-number">1.</span> <span class="nav-text">隐式动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务"><span class="nav-number">1.1.</span> <span class="nav-text">事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图层行为"><span class="nav-number">1.2.</span> <span class="nav-text">图层行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视觉呈现模型"><span class="nav-number">1.3.</span> <span class="nav-text">视觉呈现模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显式动画"><span class="nav-number">2.</span> <span class="nav-text">显式动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CAPropertyAnimation-属性动画"><span class="nav-number">2.1.</span> <span class="nav-text">CAPropertyAnimation - 属性动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CABasicAnimation-基本动画"><span class="nav-number">2.1.1.</span> <span class="nav-text">CABasicAnimation - 基本动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CAKeyframeAnimation-关键帧动画"><span class="nav-number">2.1.2.</span> <span class="nav-text">CAKeyframeAnimation - 关键帧动画</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAAnimationGroup-动画组"><span class="nav-number">2.2.</span> <span class="nav-text">CAAnimationGroup - 动画组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CATransition-过渡动画"><span class="nav-number">2.3.</span> <span class="nav-text">CATransition - 过渡动画</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tian Xueweii</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
