@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="Paradise of Web">
 <meta property="og:description" content="毕业以后，操作系统知识已经丢的差不多了，最近在工作中遇到了一些线程同步、异步访问控制等问题，Google了目前在技术论坛上的关于锁的文章，大多数都是灌水和Copy的一些内容，甚至还有一些文章在概念性错误，所以在此对锁的学习进行一些记录和总结。 什么是锁多线程中，对共享资源进行访问，为了防止并发引起的相关问题，通常都是引入锁的机制来处理并发问题。学术上对线程锁有好几种不同的定义方式，这里要对锁的几个">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-25T18:02:50.110Z">
+<meta property="og:updated_time" content="2018-11-25T18:07:48.546Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于iOS线程锁的一点研究">
 <meta name="twitter:description" content="毕业以后，操作系统知识已经丢的差不多了，最近在工作中遇到了一些线程同步、异步访问控制等问题，Google了目前在技术论坛上的关于锁的文章，大多数都是灌水和Copy的一些内容，甚至还有一些文章在概念性错误，所以在此对锁的学习进行一些记录和总结。 什么是锁多线程中，对共享资源进行访问，为了防止并发引起的相关问题，通常都是引入锁的机制来处理并发问题。学术上对线程锁有好几种不同的定义方式，这里要对锁的几个">
@@ -335,7 +335,7 @@
                 
               
 
-              <time title="创建时间：2018-11-26 01:59:32 / 修改时间：02:02:50" itemprop="dateCreated datePublished" datetime="2018-11-26T01:59:32+08:00">2018-11-26</time>
+              <time title="创建时间：2018-11-26 01:59:32 / 修改时间：02:07:48" itemprop="dateCreated datePublished" datetime="2018-11-26T01:59:32+08:00">2018-11-26</time>
             
 
             
@@ -375,10 +375,20 @@
       
         <p>毕业以后，操作系统知识已经丢的差不多了，最近在工作中遇到了一些线程同步、异步访问控制等问题，Google了目前在技术论坛上的关于锁的文章，大多数都是灌水和Copy的一些内容，甚至还有一些文章在概念性错误，所以在此对锁的学习进行一些记录和总结。</p>
 <h2 id="什么是锁"><a href="#什么是锁" class="headerlink" title="什么是锁"></a>什么是锁</h2><p>多线程中，对共享资源进行访问，为了防止并发引起的相关问题，通常都是引入锁的机制来处理并发问题。学术上对线程锁有好几种不同的定义方式，这里要对锁的几个概念做一个解释。</p>
-<h4 id="临界区"><a href="#临界区" class="headerlink" title="临界区"></a>临界区</h4><p>指的是一块对公共资源进行访问的代码，并非一种机制或是算法。</p>
-<h4 id="阻塞锁和非阻塞锁"><a href="#阻塞锁和非阻塞锁" class="headerlink" title="阻塞锁和非阻塞锁"></a>阻塞锁和非阻塞锁</h4><p>阻塞锁和非阻塞锁的区别，线程访问临界区时，该资源上锁与否线程是否被挂起。阻塞锁会挂起线程，等待临界区解锁，而非阻塞锁会保持活跃状态。</p>
-<h4 id="递归锁和非递归锁"><a href="#递归锁和非递归锁" class="headerlink" title="递归锁和非递归锁"></a>递归锁和非递归锁</h4><p>递归锁和非递归锁的区别，当一个线程多次获取同一个递归锁时，线程不会产生死锁。但是一个线程多次获取同一个非递归锁，则会产生死锁。从效率层面上来说，非递归锁的效率高于递归锁</p>
-<h4 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h4><p>死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。</p>
+<ol>
+<li><p>临界区</p>
+<p> 指的是一块对公共资源进行访问的代码，并非一种机制或是算法。</p>
+</li>
+<li><p>阻塞锁和非阻塞锁</p>
+<p> 阻塞锁和非阻塞锁的区别，线程访问临界区时，该资源上锁与否线程是否被挂起。阻塞锁会挂起线程，等待临界区解锁，而非阻塞锁会保持活跃状态。</p>
+</li>
+<li><p>递归锁和非递归锁</p>
+<p> 递归锁和非递归锁的区别，当一个线程多次获取同一个递归锁时，线程不会产生死锁。但是一个线程多次获取同一个非递归锁，则会产生死锁。从效率层面上来说，非递归锁的效率高于递归锁</p>
+</li>
+<li><p>死锁</p>
+<p> 死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。</p>
+</li>
+</ol>
 <h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p><code>非阻塞锁</code> <code>非递归锁</code></p>
 <p>自旋锁（Spin Lock），它的工作原理是当某个线程需要访问临界区时，如果该临界区已经被上锁，那么该线程不会被挂起，而是会循环请求线程锁，此时线程处于忙等的状态（在非耗时操作下，这种忙等是可以接受的），直到该资源被解锁释放。</p>
 <p>线程挂起主动出让时间片的做法是有性能消耗的，这种上下文切换会通常占用10μs。所以非阻塞锁是性能最高的锁。</p>
@@ -616,7 +626,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是锁"><span class="nav-number">1.</span> <span class="nav-text">什么是锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#临界区"><span class="nav-number">1.0.1.</span> <span class="nav-text">临界区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阻塞锁和非阻塞锁"><span class="nav-number">1.0.2.</span> <span class="nav-text">阻塞锁和非阻塞锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#递归锁和非递归锁"><span class="nav-number">1.0.3.</span> <span class="nav-text">递归锁和非递归锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#死锁"><span class="nav-number">1.0.4.</span> <span class="nav-text">死锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自旋锁"><span class="nav-number">2.</span> <span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#互斥锁"><span class="nav-number">3.</span> <span class="nav-text">互斥锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件锁"><span class="nav-number">4.</span> <span class="nav-text">条件锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号量"><span class="nav-number">5.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是锁"><span class="nav-number">1.</span> <span class="nav-text">什么是锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自旋锁"><span class="nav-number">2.</span> <span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#互斥锁"><span class="nav-number">3.</span> <span class="nav-text">互斥锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件锁"><span class="nav-number">4.</span> <span class="nav-text">条件锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号量"><span class="nav-number">5.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
