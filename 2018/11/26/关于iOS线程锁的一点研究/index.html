@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="毕业以后，操作系统知识已经丢的差不多了，最近在工作中遇到了一些线程同步、异步访问控制等问题，Google了目前在技术论坛上的关于锁的文章，大多数都是灌水和Copy的一些内容，甚至还有一些文章在概念性错误，所以在此对锁的学习进行一些记录和总结。 什么是锁多线程中，对共享资源进行访问，为了防止并发引起的相关问题，通常都是引入锁的机制来处理并发问题。学术上对线程锁有好几种不同的定义方式，这里要对锁的几个">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于iOS线程锁的一点研究">
+<meta property="og:url" content="http://yoursite.com/2018/11/26/关于iOS线程锁的一点研究/index.html">
+<meta property="og:site_name" content="Paradise of Web">
+<meta property="og:description" content="毕业以后，操作系统知识已经丢的差不多了，最近在工作中遇到了一些线程同步、异步访问控制等问题，Google了目前在技术论坛上的关于锁的文章，大多数都是灌水和Copy的一些内容，甚至还有一些文章在概念性错误，所以在此对锁的学习进行一些记录和总结。 什么是锁多线程中，对共享资源进行访问，为了防止并发引起的相关问题，通常都是引入锁的机制来处理并发问题。学术上对线程锁有好几种不同的定义方式，这里要对锁的几个">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-25T18:02:50.110Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于iOS线程锁的一点研究">
+<meta name="twitter:description" content="毕业以后，操作系统知识已经丢的差不多了，最近在工作中遇到了一些线程同步、异步访问控制等问题，Google了目前在技术论坛上的关于锁的文章，大多数都是灌水和Copy的一些内容，甚至还有一些文章在概念性错误，所以在此对锁的学习进行一些记录和总结。 什么是锁多线程中，对共享资源进行访问，为了防止并发引起的相关问题，通常都是引入锁的机制来处理并发问题。学术上对线程锁有好几种不同的定义方式，这里要对锁的几个">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/26/关于iOS线程锁的一点研究/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>关于iOS线程锁的一点研究 | Paradise of Web</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Paradise of Web</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">不会弹吉他的贝斯手，不是好程序员</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/26/关于iOS线程锁的一点研究/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tian Xueweii">
+      <meta itemprop="description" content="tianxueweii's iOS blog">
+      <meta itemprop="image" content="/images/default_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Paradise of Web">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于iOS线程锁的一点研究
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-26 01:59:32 / 修改时间：02:02:50" itemprop="dateCreated datePublished" datetime="2018-11-26T01:59:32+08:00">2018-11-26</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>毕业以后，操作系统知识已经丢的差不多了，最近在工作中遇到了一些线程同步、异步访问控制等问题，Google了目前在技术论坛上的关于锁的文章，大多数都是灌水和Copy的一些内容，甚至还有一些文章在概念性错误，所以在此对锁的学习进行一些记录和总结。</p>
+<h2 id="什么是锁"><a href="#什么是锁" class="headerlink" title="什么是锁"></a>什么是锁</h2><p>多线程中，对共享资源进行访问，为了防止并发引起的相关问题，通常都是引入锁的机制来处理并发问题。学术上对线程锁有好几种不同的定义方式，这里要对锁的几个概念做一个解释。</p>
+<h4 id="临界区"><a href="#临界区" class="headerlink" title="临界区"></a>临界区</h4><p>指的是一块对公共资源进行访问的代码，并非一种机制或是算法。</p>
+<h4 id="阻塞锁和非阻塞锁"><a href="#阻塞锁和非阻塞锁" class="headerlink" title="阻塞锁和非阻塞锁"></a>阻塞锁和非阻塞锁</h4><p>阻塞锁和非阻塞锁的区别，线程访问临界区时，该资源上锁与否线程是否被挂起。阻塞锁会挂起线程，等待临界区解锁，而非阻塞锁会保持活跃状态。</p>
+<h4 id="递归锁和非递归锁"><a href="#递归锁和非递归锁" class="headerlink" title="递归锁和非递归锁"></a>递归锁和非递归锁</h4><p>递归锁和非递归锁的区别，当一个线程多次获取同一个递归锁时，线程不会产生死锁。但是一个线程多次获取同一个非递归锁，则会产生死锁。从效率层面上来说，非递归锁的效率高于递归锁</p>
+<h4 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h4><p>死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。</p>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p><code>非阻塞锁</code> <code>非递归锁</code></p>
+<p>自旋锁（Spin Lock），它的工作原理是当某个线程需要访问临界区时，如果该临界区已经被上锁，那么该线程不会被挂起，而是会循环请求线程锁，此时线程处于忙等的状态（在非耗时操作下，这种忙等是可以接受的），直到该资源被解锁释放。</p>
+<p>线程挂起主动出让时间片的做法是有性能消耗的，这种上下文切换会通常占用10μs。所以非阻塞锁是性能最高的锁。</p>
+<p>iOS系统下可用的自旋锁：</p>
+<ul>
+<li><code>OSSpinlock</code>：iOS10以后被废弃，有可能造成死锁，参考ibireme的文章，<a href="https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="noopener">不再安全的 OSSpinLock</a></li>
+<li><code>os_unfair_lock</code>：iOS10之后支持，解决了OSSpinlock优先级反转的问题。从底层看线程处于休眠状态，并非处于忙等，该锁实现原理有待考证</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;os/lock.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">	os_unfair_lock_t unfairLock;</span><br><span class="line">	unfairLock = &amp;OS_UNFAIR_LOCK_INIT;</span><br><span class="line">	os_unfair_lock_lock(unfairLock);</span><br><span class="line">	...</span><br><span class="line">	os_unfair_lock_unlock(unfairLock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="互斥锁"><a href="#互斥锁" class="headerlink" title="互斥锁"></a>互斥锁</h2><p><code>阻塞锁</code> <code>递归锁</code> <code>非递归锁</code></p>
+<p>互斥锁（Mutex），它的工作原理是当某个线程访问临界区已经被加锁，那么该线程会进入休眠状态。当临界区解锁，则等待线程会被唤醒。互斥锁要保证在任一时刻，只能有一个线程访问临界区，同时只有上锁线程能够进行unLock操作</p>
+<p>iOS系统下可用的互斥锁：</p>
+<ul>
+<li><code>pthread_mutex</code>：C语言实现的互斥锁，可以指定是否是递归锁，效率高。Foundation框架下实现的锁基本都是基于它封装的</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * PTHREAD_MUTEX_NORMAL     默认非递归锁</span></span><br><span class="line"><span class="comment"> * PTHREAD_MUTEX_ERRORCHECK 非递归锁</span></span><br><span class="line"><span class="comment"> * PTHREAD_MUTEX_RECURSIVE  递归锁</span></span><br><span class="line"><span class="comment"> * PTHREAD_MUTEX_DEFAULT    PTHREAD_MUTEX_NORMAL</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">	pthread_mutex_t lock;</span><br><span class="line">	pthread_mutexattr_t attr;</span><br><span class="line">	pthread_mutexattr_init(&amp;attr);</span><br><span class="line">	<span class="comment">// 指定互斥锁类型为非递归锁</span></span><br><span class="line">	pthread_mutexattr_settype(&amp;attr, PTHREAD_MUTEX_RECURSIVE);</span><br><span class="line">	pthread_mutex_init(&amp;lock, &amp;attr);</span><br><span class="line"></span><br><span class="line">	pthread_mutex_lock(&amp;lock);</span><br><span class="line">	...</span><br><span class="line"> 	pthread_mutex_unlock(&amp;lock);</span><br><span class="line">        </span><br><span class="line">	pthread_mutexattr_destroy(&amp;attr);</span><br><span class="line">	pthread_mutex_destroy(&amp;lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>NSLock</code>：OC对象封装的非递归锁</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">NSLock</span> *lock = [[<span class="built_in">NSLock</span> alloc] init];</span><br><span class="line">	[lock lock];</span><br><span class="line">	...</span><br><span class="line">	[lock unlock];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>NSRecursiveLock</code>：OC对象封装的递归锁</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">NSRecursiveLock</span> *lock = [[<span class="built_in">NSRecursiveLock</span> alloc] init];</span><br><span class="line">	[lock lock];</span><br><span class="line">	...</span><br><span class="line">	[lock unlock];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>@synchronized</code>：牺牲了效率换来语法上简洁的互斥锁，非递归锁</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	@synchronized (NSObject.new) &#123;</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="条件锁"><a href="#条件锁" class="headerlink" title="条件锁"></a>条件锁</h2><p><code>阻塞锁</code> <code>非递归锁</code></p>
+<p>条件锁（Condition Lock），实际上是对一个互斥锁和一个条件变量的封装。当线程想要访问临界区，需要满足Condition</p>
+<p>iOS系统下可用的互斥锁：</p>
+<ul>
+<li>NSCondition</li>
+<li>NSConditionLock</li>
+</ul>
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量（Semaphore）是实现异步调度的一种策略，这种机制可以实现线程加锁的目的。信号量机制与互斥锁最大的区别，是互斥锁要保证统一时间只能有一个线程访问临界区，但是信号量可以任意指定同时访问临界区的线程数</p>
+<p>iOS在GCD中封装了<code>dispatch_semaphore</code>，用于实现信号量调度</p>
+<ol>
+<li><p><code>dispatch_semaphore_create(long value)</code>：<br>初始化<code>dispatch_semaphore_t</code>类型的信号量，参数value是最大并发量。注意value须大于0，否则会返回null。</p>
+</li>
+<li><p><code>dispatch_semaphore_signal(dispatch_semaphore_t signal)</code>：<br>参数signal是传入所需信号量，并使传入的信号量加1，可以理解为解锁。</p>
+</li>
+<li><p><code>dispatch_semaphore_wait(dispatch_semaphore_t signal, dispatch_time_t timeout)</code><br>参数是传入一个信号量和一个超时时间。当传入的信号量的值大于0（可执行并发），会继续执行临界区代码，并且将传入的信号量减1。当传入的信号量的值等于0（无可并发资源），则线程进入休眠状态主动让出时间片，并将该临界区任务加入等待队列，待信号量加1时，执行队列顶部任务。如果在线程休眠的过程中一直没有收到信号直到timeOut，则线程会继续访问临界区。可以理解为加锁。</p>
+</li>
+</ol>
+<p>使用代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	dispatch_semaphore_t lock = dispatch_semaphore_create(<span class="number">1</span>);   </span><br><span class="line">	dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);       </span><br><span class="line">	dispatch_semaphore_signal(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>具体使用哪一种锁，要根据不同的业务场景和功能性需求进行选择</li>
+<li>在保证没有递归获取并且线程优先级一致的情况下，临界区非耗时操作可以选择自旋锁</li>
+<li>如果不能保证访问临界区线程优先级相同，并且要求对数据的原子性操作，那么推荐使用互斥锁，这里建议尽量使用非递归锁，首先是效率上较高并且在发生死锁的时候容易Debug</li>
+<li>如果想要控制最大并发，允许多线程访问临界区，可以使用信号量控制</li>
+<li>推荐重点学习掌握<code>pthread_mutex</code>和<code>dispatch_semaphore</code></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/14/iOS Core Animation- Advanced Techniques-学习笔记（四）/" rel="next" title="iOS Core Animation - Advanced Techniques-学习笔记（四）">
+                <i class="fa fa-chevron-left"></i> iOS Core Animation - Advanced Techniques-学习笔记（四）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/default_avatar.gif"
+                alt="Tian Xueweii" />
+            
+              <p class="site-author-name" itemprop="name">Tian Xueweii</p>
+              <p class="site-description motion-element" itemprop="description">tianxueweii's iOS blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tianxueweii" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是锁"><span class="nav-number">1.</span> <span class="nav-text">什么是锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#临界区"><span class="nav-number">1.0.1.</span> <span class="nav-text">临界区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阻塞锁和非阻塞锁"><span class="nav-number">1.0.2.</span> <span class="nav-text">阻塞锁和非阻塞锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#递归锁和非递归锁"><span class="nav-number">1.0.3.</span> <span class="nav-text">递归锁和非递归锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#死锁"><span class="nav-number">1.0.4.</span> <span class="nav-text">死锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自旋锁"><span class="nav-number">2.</span> <span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#互斥锁"><span class="nav-number">3.</span> <span class="nav-text">互斥锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件锁"><span class="nav-number">4.</span> <span class="nav-text">条件锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号量"><span class="nav-number">5.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tian Xueweii</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
