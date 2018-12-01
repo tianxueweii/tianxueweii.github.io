@@ -108,25 +108,28 @@
 
 
 
-  <meta name="description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry">
-<meta name="keywords" content="Web,Node">
+  <meta name="description" content="关于开发中一些问题的记录。 如下图所示，《活动：一起聊聊动物世界》这个信息流Cell的标题，本应换行的Label内容直接被截断了，并且上下空白太多。  Debug 首先尝试在不同系统同一机型上进行Debug，发现4.7英寸屏幕从iOS8到iOS12.1都未出现该问题，暂时排除系统版本导致Bug。 尝试不同机型，发现5.5英寸和5.8英寸屏都出现了内容被截断的现象，由于界面采用比例布局，初步判定是在">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Node环境搭建">
-<meta property="og:url" content="http://yoursite.com/2018/08/13/Node环境搭建/index.html">
+<meta property="og:title" content="关于UILabel高度计算错误问题的解决方案">
+<meta property="og:url" content="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/index.html">
 <meta property="og:site_name" content="Paradise of Web">
-<meta property="og:description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry">
+<meta property="og:description" content="关于开发中一些问题的记录。 如下图所示，《活动：一起聊聊动物世界》这个信息流Cell的标题，本应换行的Label内容直接被截断了，并且上下空白太多。  Debug 首先尝试在不同系统同一机型上进行Debug，发现4.7英寸屏幕从iOS8到iOS12.1都未出现该问题，暂时排除系统版本导致Bug。 尝试不同机型，发现5.5英寸和5.8英寸屏都出现了内容被截断的现象，由于界面采用比例布局，初步判定是在">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-13T06:42:51.113Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130165837.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130170119.png">
+<meta property="og:updated_time" content="2018-12-01T15:36:09.035Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Node环境搭建">
-<meta name="twitter:description" content="由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：  nvm(Node.js Version Manager)：解决多版本共存、切换问题 npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块 nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry">
+<meta name="twitter:title" content="关于UILabel高度计算错误问题的解决方案">
+<meta name="twitter:description" content="关于开发中一些问题的记录。 如下图所示，《活动：一起聊聊动物世界》这个信息流Cell的标题，本应换行的Label内容直接被截断了，并且上下空白太多。  Debug 首先尝试在不同系统同一机型上进行Debug，发现4.7英寸屏幕从iOS8到iOS12.1都未出现该问题，暂时排除系统版本导致Bug。 尝试不同机型，发现5.5英寸和5.8英寸屏都出现了内容被截断的现象，由于界面采用比例布局，初步判定是在">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130165837.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/08/13/Node环境搭建/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/"/>
 
 
 
@@ -136,7 +139,7 @@
   };
 </script>
 
-  <title>Node环境搭建 | Paradise of Web</title>
+  <title>关于UILabel高度计算错误问题的解决方案 | Paradise of Web</title>
   
 
 
@@ -293,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/Node环境搭建/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tian Xueweii">
@@ -310,7 +313,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Node环境搭建
+          <h1 class="post-title" itemprop="name headline">关于UILabel高度计算错误问题的解决方案
               
             
           </h1>
@@ -335,7 +338,7 @@
                 
               
 
-              <time title="创建时间：2018-08-13 09:50:58 / 修改时间：14:42:51" itemprop="dateCreated datePublished" datetime="2018-08-13T09:50:58+08:00">2018-08-13</time>
+              <time title="创建时间：2018-12-01 23:31:17 / 修改时间：23:36:09" itemprop="dateCreated datePublished" datetime="2018-12-01T23:31:17+08:00">2018-12-01</time>
             
 
             
@@ -373,32 +376,29 @@
       
 
       
-        <p>由于Node.js版本更新快，版本差异性大，推荐使用3m来管理配置环境：</p>
+        <p>关于开发中一些问题的记录。</p>
+<p>如下图所示，《活动：一起聊聊动物世界》这个信息流Cell的标题，本应换行的Label内容直接被截断了，并且上下空白太多。</p>
+<p><img src="/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130165837.png" width="30%"></p>
+<h2 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h2><ul>
+<li>首先尝试在不同系统同一机型上进行Debug，发现4.7英寸屏幕从iOS8到iOS12.1都未出现该问题，暂时排除系统版本导致Bug。</li>
+<li>尝试不同机型，发现5.5英寸和5.8英寸屏都出现了内容被截断的现象，由于界面采用比例布局，初步判定是在动态计算Label高度时出现的精度问题（float类型在计算时会四舍五入）</li>
+<li>尝试在界面<code>layoutSubview</code>以后，对Label进行<code>sizeToFit</code>操作，结果如图</li>
+</ul>
+<p><img src="/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130170119.png" width="30%"></p>
 <ul>
-<li>nvm(Node.js Version Manager)：解决多版本共存、切换问题</li>
-<li>npm(Node.js Package Manager)：解决Node.js模块安装问题，其本身是一个Node.js模块</li>
-<li>nrm(Node.js Registry Manager)：解决npm镜像访问慢的问题，提供测速、切换registry功能</li>
+<li>看起来成功了，但这样的操作似乎是运气好，实际上是存在问题的，此时Cell的高度已经确定，我们只是强制改变了标题Label的frame，而Cell的高度并没有改变。并且如果Label添加了autolayout约束，那么sizeToFit会失效（不知道为什么我成功了）</li>
+<li>优化为使用<code>sizeThatFits</code>拿到最优布局信息后更新约束，这样信息流Cell的自适应高度也会更新为理想高度</li>
 </ul>
-<h2 id="NVM"><a href="#NVM" class="headerlink" title="NVM"></a>NVM</h2><h3 id="nvm安装命令"><a href="#nvm安装命令" class="headerlink" title="nvm安装命令"></a>nvm安装命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash</span><br></pre></td></tr></table></figure>
-<p>通过curl下载install.sh脚本并执行，待执行完成后，它会把nvm命令的执行路径放到~/.bashrc文件里，通过执行source命令，使环境变量生效</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h3 id="nvm的常用命令"><a href="#nvm的常用命令" class="headerlink" title="nvm的常用命令"></a>nvm的常用命令</h3><ul>
-<li>安装：<code>$ nvm install 4.4.5</code></li>
-<li>设置默认：<code>$ nvm alias default 4.4.5</code></li>
-<li>切换版本：<code>$ nvm use 6</code></li>
-<li>列出当前本地版本：<code>$ nvm ls</code></li>
-<li>列出远端可安装版本：<code>$ nvm ls-remote</code></li>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGSize</span> labelSize = [<span class="keyword">self</span>.titleLabel sizeThatFits:<span class="built_in">CGSizeMake</span>(<span class="keyword">self</span>.titleLabel.frame.size.width, MAXFLOAT)];</span><br><span class="line">[<span class="keyword">self</span>.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">	make.height.mas_equalTo(labelSize.height);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
+<li>猜测系统UILabel进行布局时，使用了NSString的<code>boundingRectWithSize:</code>方法。在计算出排版高度时，由于是float类型可能存在四舍五入等情况，最后存在的误差导致UILabel显示不全，上下空白太多</li>
+<li>网络上有一些解决方案，例如<code>boundingRectWithSize:</code>计算出结果后取整再+1，这样的做法个人认为不够优雅，它并不是UILabel渲染的理想值，推荐使用<code>sizeThatFits:</code></li>
 </ul>
-<p>可以说这5个命令在开发过程中足够用，其实nvm还有很多高级特性，比如在项目根目录创建.npmrc指定特定的Node.js版本，它就切换到对应版本，类似的很多，就不一一列举了</p>
-<h2 id="NRM"><a href="#NRM" class="headerlink" title="NRM"></a>NRM</h2><p>仓库源管理工具，源类似于pods的repo管理。<br>cnpm源每5分钟更新一次，如果上传了新的package使用cnpm不能马上获取更新</p>
-<h3 id="nrm安装命令"><a href="#nrm安装命令" class="headerlink" title="nrm安装命令"></a>nrm安装命令</h3><p>nrm是Node.js的模块，可直接使用npm来安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo npm install --global nrm</span><br></pre></td></tr></table></figure>
-<h3 id="nrm的常用命令"><a href="#nrm的常用命令" class="headerlink" title="nrm的常用命令"></a>nrm的常用命令</h3><ul>
-<li>测速：<code>$ nrm test</code></li>
-<li>查看源：<code>$ nrm ls</code></li>
-<li>切换源：<code>$ nrm use cnpm</code></li>
+<h2 id="关于sizeThatFits和sizeToFit"><a href="#关于sizeThatFits和sizeToFit" class="headerlink" title="关于sizeThatFits和sizeToFit"></a>关于sizeThatFits和sizeToFit</h2><ul>
+<li><code>sizeToFit</code>方法会计算最适合内容的宽度和高度，并会直接作用于调用对象frame</li>
+<li><code>sizeThatFits:</code>方法会计算最适合内容的宽度和高度，但是不会直接作用于对象</li>
+<li><code>sizeThatFits:</code>方法计算的值是理想值</li>
 </ul>
-<h2 id="NPM"><a href="#NPM" class="headerlink" title="NPM"></a>NPM</h2><p>当安装好Node.js环境后，就已经自带了npm管理工具</p>
 
       
     </div>
@@ -419,9 +419,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Web/" rel="tag"># Web</a>
-          
-            <a href="/tags/Node/" rel="tag"># Node</a>
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
           
         </div>
       
@@ -434,8 +432,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/12/iOS架构补完计划/" rel="next" title="iOS架构补完计划">
-                <i class="fa fa-chevron-left"></i> iOS架构补完计划
+              <a href="/2018/11/26/关于iOS线程锁的一点研究/" rel="next" title="关于iOS线程锁的一点研究">
+                <i class="fa fa-chevron-left"></i> 关于iOS线程锁的一点研究
               </a>
             
           </div>
@@ -443,10 +441,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/14/JavaScript异步和事件循环机制/" rel="prev" title="JavaScript异步和事件循环机制">
-                JavaScript异步和事件循环机制 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -588,7 +582,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NVM"><span class="nav-number">1.</span> <span class="nav-text">NVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nvm安装命令"><span class="nav-number">1.1.</span> <span class="nav-text">nvm安装命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nvm的常用命令"><span class="nav-number">1.2.</span> <span class="nav-text">nvm的常用命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NRM"><span class="nav-number">2.</span> <span class="nav-text">NRM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nrm安装命令"><span class="nav-number">2.1.</span> <span class="nav-text">nrm安装命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nrm的常用命令"><span class="nav-number">2.2.</span> <span class="nav-text">nrm的常用命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NPM"><span class="nav-number">3.</span> <span class="nav-text">NPM</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Debug"><span class="nav-number">1.</span> <span class="nav-text">Debug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于sizeThatFits和sizeToFit"><span class="nav-number">3.</span> <span class="nav-text">关于sizeThatFits和sizeToFit</span></a></li></ol></div>
             
 
           </div>
