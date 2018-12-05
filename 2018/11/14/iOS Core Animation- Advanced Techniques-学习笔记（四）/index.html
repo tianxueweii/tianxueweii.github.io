@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="Paradise of Web">
 <meta property="og:description" content="经过之前学习，对于Core Animation除了动画外的特性有了一些了解。本篇开始，涉及到了框架最主要特性动画的相关知识 隐式动画事务 Core Animation基于一个假设构建，屏幕上的任何东西都可以（或可能）做动画。动画不需要手动打开，但是要明确关闭，否则会一直存在  这里会有一个问题，为什么更改UIView的属性，不会产生任何动画效果，若有需要必须用animation块包裹呢   对于C">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-01T15:32:53.575Z">
+<meta property="og:updated_time" content="2018-12-05T16:18:28.923Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Core Animation - Advanced Techniques-学习笔记（四）">
 <meta name="twitter:description" content="经过之前学习，对于Core Animation除了动画外的特性有了一些了解。本篇开始，涉及到了框架最主要特性动画的相关知识 隐式动画事务 Core Animation基于一个假设构建，屏幕上的任何东西都可以（或可能）做动画。动画不需要手动打开，但是要明确关闭，否则会一直存在  这里会有一个问题，为什么更改UIView的属性，不会产生任何动画效果，若有需要必须用animation块包裹呢   对于C">
@@ -352,7 +352,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-12-01 23:32:53" itemprop="dateModified" datetime="2018-12-01T23:32:53+08:00">2018-12-01</time>
+                <time title="修改时间：2018-12-06 00:18:28" itemprop="dateModified" datetime="2018-12-06T00:18:28+08:00">2018-12-06</time>
               
             
           </span>
@@ -419,13 +419,11 @@
 <li>UIView对实现了对应关联图层的CALayerDelegate协议，如果属性变化不在动画块中，则UIView对所有图层行为返回了nil</li>
 <li>禁用隐式动画还有一个方法，是使用事务类CATransacition的<code>+setDisableActions:</code>方法</li>
 </ul>
-<blockquote>
 <p>总结：</p>
 <ol>
 <li>UIView关联的图层禁用了隐式动画，对这种图层做动画的唯一办法就是使用UIView的动画函数（而不是依赖CATransaction），或者继承UIView，并覆盖<code>-actionForLayer:forKey:</code>方法，或者直接创建一个显式动画</li>
 <li>对于单独存在的图层，我们可以通过实现图层的<code>-actionForLayer:forKey:</code>委托方法，或者提供一个<code>actions</code>字典来控制隐式动画</li>
 </ol>
-</blockquote>
 <h3 id="视觉呈现模型"><a href="#视觉呈现模型" class="headerlink" title="视觉呈现模型"></a>视觉呈现模型</h3><ul>
 <li><p>有经验的开发者可能接触过类似MVVM模型的Vue框架，当你在VM更改了M属性后，视图层会立即回应你的修改。回到CALayer，它的属性行为其实略微有些奇怪，当你改变一个图层的属性时，视图上并没有立即生效（可以自己打一个断点实验），而是一段时间后，通过渐变更新。</p>
 <blockquote>
