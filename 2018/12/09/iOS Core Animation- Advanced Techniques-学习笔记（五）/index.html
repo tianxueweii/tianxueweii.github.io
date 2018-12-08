@@ -117,7 +117,7 @@
 <meta property="og:description" content="《iOS Core Animation: Advanced Techniques》- 性能调优篇 定时器动画调优当我们想开发一个基于时间流逝运动的动画时，首先会想到使用NSTimer计时器，但是这里不推荐使用这个类，我们看下NSTimer是怎么工作的。 RunloopiOS上每个线程都管理一个Runloop。对于主线程的Runloop，每一次循环都会做以下操作：  处理触摸事件 网络数据包处理 执">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/2018/12/09/iOS%20Core%20Animation-%20Advanced%20Techniques-学习笔记（五）/4989112fcb28a04b156f4c7.png">
-<meta property="og:updated_time" content="2018-12-08T17:08:00.790Z">
+<meta property="og:updated_time" content="2018-12-08T17:15:12.032Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Core Animation - Advanced Techniques-学习笔记（五）">
 <meta name="twitter:description" content="《iOS Core Animation: Advanced Techniques》- 性能调优篇 定时器动画调优当我们想开发一个基于时间流逝运动的动画时，首先会想到使用NSTimer计时器，但是这里不推荐使用这个类，我们看下NSTimer是怎么工作的。 RunloopiOS上每个线程都管理一个Runloop。对于主线程的Runloop，每一次循环都会做以下操作：  处理触摸事件 网络数据包处理 执">
@@ -337,7 +337,7 @@
                 
               
 
-              <time title="创建时间：2018-12-09 01:07:10 / 修改时间：01:08:00" itemprop="dateCreated datePublished" datetime="2018-12-09T01:07:10+08:00">2018-12-09</time>
+              <time title="创建时间：2018-12-09 01:07:10 / 修改时间：01:15:12" itemprop="dateCreated datePublished" datetime="2018-12-09T01:07:10+08:00">2018-12-09</time>
             
 
             
@@ -426,7 +426,7 @@
 <h3 id="初始化必要视图而非懒加载"><a href="#初始化必要视图而非懒加载" class="headerlink" title="初始化必要视图而非懒加载"></a>初始化必要视图而非懒加载</h3><p>懒加载只有在视图需要加载时才会去加载，这样的做法对内存占用和启动速度都要好处，但是在完成初始化操作前，你的动画都会被延迟。所以可以对动画必要视图进行优先初始化，而非傻傻的懒加载</p>
 <h3 id="使用CoreAnimation专用图层代替CoreGraphics绘制"><a href="#使用CoreAnimation专用图层代替CoreGraphics绘制" class="headerlink" title="使用CoreAnimation专用图层代替CoreGraphics绘制"></a>使用CoreAnimation专用图层代替CoreGraphics绘制</h3><p>当实现了视图中的<code>-drawRect:</code>方法，或者CALayerDelegate的<code>-drawLayer:inContext:</code>方法，就会在绘制前产生一个可估算的性能开销，CoreAnimation需要在内存中开辟一个等大小的寄宿图用于绘制，CoreGraphics绘制会十分缓慢，绘制结束还需通过通过IPC将图片数据上传到BackBoard，这也是为什么非不得已都不建议使用软件绘图，并且不要实现<code>-drawRect:</code>方法，尽管可能它是空方法。CoreAniamtion为图形绘制提供了专有图层，并提供了硬件加速，总体上都比Core Graphics更快，同时他们也避免了创造一个寄宿图</p>
 <blockquote>
-<p>绘制上下文占用内存 = layer.width(px) <em> layer.height(px) </em> 4(bit)</p>
+<p>绘制上下文占用内存 = layer.width(px) x layer.height(px) x 4(bit)</p>
 <p>对于一个在Retina iPad上的全屏图层来说，这个内存量就是2048 <em> 1526 </em> 4bit，相当于12MB内存，并且图层每次重绘的时候都需要重新抹掉内存并重新分配。</p>
 </blockquote>
 <h3 id="优化图片解码"><a href="#优化图片解码" class="headerlink" title="优化图片解码"></a>优化图片解码</h3><p>PNG或者JPEG压缩之后的图片文件会比同质量的位图小得多，直接或间接使用UIImageView，或者将图片绘制到CoreGraphics都需要对图片解压缩，对于一个较大的图片，都会占用一定的时间。这一步虽然不可避免，但是我们可以把这个操作放到后台线程，先把图片绘制到CGBitmapContext中，然后从Bitmap直接创建图片。</p>
