@@ -118,7 +118,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130165837.png">
 <meta property="og:image" content="http://yoursite.com/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130170119.png">
-<meta property="og:updated_time" content="2018-12-01T15:36:09.035Z">
+<meta property="og:updated_time" content="2018-12-18T15:31:10.182Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于UILabel高度计算错误问题的解决方案">
 <meta name="twitter:description" content="关于开发中一些问题的记录。 如下图所示，《活动：一起聊聊动物世界》这个信息流Cell的标题，本应换行的Label内容直接被截断了，并且上下空白太多。  Debug 首先尝试在不同系统同一机型上进行Debug，发现4.7英寸屏幕从iOS8到iOS12.1都未出现该问题，暂时排除系统版本导致Bug。 尝试不同机型，发现5.5英寸和5.8英寸屏都出现了内容被截断的现象，由于界面采用比例布局，初步判定是在">
@@ -338,12 +338,24 @@
                 
               
 
-              <time title="创建时间：2018-12-01 23:31:17 / 修改时间：23:36:09" itemprop="dateCreated datePublished" datetime="2018-12-01T23:31:17+08:00">2018-12-01</time>
+              <time title="创建时间：2018-12-01 23:31:17" itemprop="dateCreated datePublished" datetime="2018-12-01T23:31:17+08:00">2018-12-01</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-18 23:31:10" itemprop="dateModified" datetime="2018-12-18T23:31:10+08:00">2018-12-18</time>
               
             
           </span>
@@ -386,7 +398,7 @@
 </ul>
 <p><img src="/2018/12/01/关于UILabel高度计算错误问题的解决方案/20181130170119.png" width="30%"></p>
 <ul>
-<li>看起来成功了，但这样的操作似乎是运气好，实际上是存在问题的，此时Cell的高度已经确定，我们只是强制改变了标题Label的frame，而Cell的高度并没有改变。并且如果Label添加了autolayout约束，那么sizeToFit会失效（不知道为什么我成功了）</li>
+<li>看起来成功了，但这样的操作似乎是运气好，实际上是存在问题的，此时Cell的高度已经确定，我们只是强制改变了标题Label的frame，而Cell的高度并没有改变。并且如果Label添加了autolayout约束，那么sizeToFit会失效</li>
 <li>优化为使用<code>sizeThatFits</code>拿到最优布局信息后更新约束，这样信息流Cell的自适应高度也会更新为理想高度</li>
 </ul>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGSize</span> labelSize = [<span class="keyword">self</span>.titleLabel sizeThatFits:<span class="built_in">CGSizeMake</span>(<span class="keyword">self</span>.titleLabel.frame.size.width, MAXFLOAT)];</span><br><span class="line">[<span class="keyword">self</span>.titleLabel mas_updateConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">	make.height.mas_equalTo(labelSize.height);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
