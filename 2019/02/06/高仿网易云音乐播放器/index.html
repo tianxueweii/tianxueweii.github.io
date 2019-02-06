@@ -108,13 +108,13 @@
 
 
 
-  <meta name="description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 必要知识储备：  基础数据结构知识（队列、栈、链表） AVFoundati">
+  <meta name="description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 本文主要介绍了播放器实现的一些核心代码和思路，完整代码请通过文末链接自行c">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="高仿网易云音乐播放器">
 <meta property="og:url" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/index.html">
 <meta property="og:site_name" content="Paradise of Web">
-<meta property="og:description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 必要知识储备：  基础数据结构知识（队列、栈、链表） AVFoundati">
+<meta property="og:description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 本文主要介绍了播放器实现的一些核心代码和思路，完整代码请通过文末链接自行c">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/player.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/playing.png">
@@ -122,10 +122,10 @@
 <meta property="og:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/next.png">
 <meta property="og:image" content="https://docs-assets.developer.apple.com/published/f27f0815f6/d865bb39-a4c6-40ef-ba0b-7823cea46e83.png">
 <meta property="og:image" content="https://developer.apple.com/library/archive/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/Art/ASPG_intro_2x.png">
-<meta property="og:updated_time" content="2019-02-06T07:52:29.523Z">
+<meta property="og:updated_time" content="2019-02-06T08:01:53.488Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="高仿网易云音乐播放器">
-<meta name="twitter:description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 必要知识储备：  基础数据结构知识（队列、栈、链表） AVFoundati">
+<meta name="twitter:description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 本文主要介绍了播放器实现的一些核心代码和思路，完整代码请通过文末链接自行c">
 <meta name="twitter:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/player.png">
 
 
@@ -342,7 +342,7 @@
                 
               
 
-              <time title="创建时间：2019-02-06 15:50:58 / 修改时间：15:52:29" itemprop="dateCreated datePublished" datetime="2019-02-06T15:50:58+08:00">2019-02-06</time>
+              <time title="创建时间：2019-02-06 15:50:58 / 修改时间：16:01:53" itemprop="dateCreated datePublished" datetime="2019-02-06T15:50:58+08:00">2019-02-06</time>
             
 
             
@@ -381,8 +381,9 @@
 
       
         <p>网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。</p>
-<p><img width="50%" src="/2019/02/06/高仿网易云音乐播放器/player.png"></p>
+<p><img width="30%" src="/2019/02/06/高仿网易云音乐播放器/player.png"></p>
 <p>单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。</p>
+<p>本文主要介绍了播放器实现的一些核心代码和思路，完整代码请通过文末链接自行clone</p>
 <p>必要知识储备：</p>
 <ul>
 <li>基础数据结构知识（队列、栈、链表）</li>
@@ -437,7 +438,7 @@
 <p><a href="https://developer.apple.com/documentation/avfoundation/media_assets_playback_and_editing/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio?language=objc" target="_blank" rel="noopener">参考文献：《Enabling Background Audio》</a></p>
 <h3 id="设置AVAudioSession"><a href="#设置AVAudioSession" class="headerlink" title="设置AVAudioSession"></a>设置AVAudioSession</h3><p>可以使用<code>AVAudioSession</code>告诉操作系统如何处理你的App音频流，而不需要和音频硬件产生直接的交互或者操作</p>
 <p><img width="70%" src="https://developer.apple.com/library/archive/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/Art/ASPG_intro_2x.png"></p>
-<p>设置<code>AVAudioSession</code>的<code>Category</code>确定基本事件行为，再使用<code>Mode`</code>Options`两个属性对行为进行微调，下面是播放器设置源码:</p>
+<p>设置<code>AVAudioSession</code>的<code>Category</code>确定基本事件行为，再使用<code>Mode</code> <code>Options</code>两个属性对行为进行微调，下面是播放器设置源码:</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="built_in">NSDictionary</span> *)launchOptions &#123;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 设置并激活音频会话类别</span></span><br><span class="line">    <span class="built_in">AVAudioSession</span> *session = [<span class="built_in">AVAudioSession</span> sharedInstance];</span><br><span class="line">    <span class="comment">// 设置Category只支持音频播放，打断其他不支持混音App</span></span><br><span class="line">    [session setCategory:<span class="built_in">AVAudioSessionCategoryPlayback</span> error:<span class="literal">nil</span>];</span><br><span class="line">    <span class="comment">// 启用session</span></span><br><span class="line">    [session setActive:<span class="literal">YES</span> error:<span class="literal">nil</span>];</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><a href="https://developer.apple.com/library/archive/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/Introduction/Introduction.html" target="_blank" rel="noopener">参考文献：《Audio Session Programming Guide》</a></p>
 <h3 id="远程控制媒体播放"><a href="#远程控制媒体播放" class="headerlink" title="远程控制媒体播放"></a>远程控制媒体播放</h3><p>我们还需支持在锁屏的媒体资源信息展示以及控制中心中对音乐的控制。我们可以使用Media Player框架的<code>MPRemoteCommandCenter</code>和<code>MPNowPlayingInfoCenter</code>实现。</p>
