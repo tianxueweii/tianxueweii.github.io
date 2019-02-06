@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 必要知识储备：  基础数据结构知识（队列、栈、链表） AVFoundati">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高仿网易云音乐播放器">
+<meta property="og:url" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/index.html">
+<meta property="og:site_name" content="Paradise of Web">
+<meta property="og:description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 必要知识储备：  基础数据结构知识（队列、栈、链表） AVFoundati">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/player.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/playing.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/prev.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/next.png">
+<meta property="og:image" content="https://docs-assets.developer.apple.com/published/f27f0815f6/d865bb39-a4c6-40ef-ba0b-7823cea46e83.png">
+<meta property="og:image" content="https://developer.apple.com/library/archive/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/Art/ASPG_intro_2x.png">
+<meta property="og:updated_time" content="2019-02-06T07:52:29.523Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="高仿网易云音乐播放器">
+<meta name="twitter:description" content="网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。  单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。 必要知识储备：  基础数据结构知识（队列、栈、链表） AVFoundati">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/player.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>高仿网易云音乐播放器 | Paradise of Web</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Paradise of Web</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">不会弹吉他的贝斯手，不是好程序员</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/06/高仿网易云音乐播放器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tian Xueweii">
+      <meta itemprop="description" content="tianxueweii's iOS blog">
+      <meta itemprop="image" content="/images/default_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Paradise of Web">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">高仿网易云音乐播放器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-06 15:50:58 / 修改时间：15:52:29" itemprop="dateCreated datePublished" datetime="2019-02-06T15:50:58+08:00">2019-02-06</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>网易云音乐凭着良好的交互体验，优质丰富的资源在终端一直有着不错的市场。相比较市面上的主流音乐播放器（QQ音乐、虾米音乐），笔者更倾向于云音乐的UED。</p>
+<p><img width="50%" src="/2019/02/06/高仿网易云音乐播放器/player.png"></p>
+<p>单从播放器页来说，云音乐的界面非常简洁，只保留了主要的操作功能，避免过多的信息造成视觉上的疲倦。主视图上不断旋转的黑胶唱片非常有带入感，左滑右滑切换唱片的设计也非常经典。</p>
+<p>必要知识储备：</p>
+<ul>
+<li>基础数据结构知识（队列、栈、链表）</li>
+<li>AVFoundation/AVPlayer</li>
+<li>AVAudioSession</li>
+<li>CoreAnimation</li>
+<li>Autolayout（Masonry）</li>
+<li>KVO、Notification</li>
+</ul>
+<p>实现需求：</p>
+<ul>
+<li>播放器播放、暂停，上一首、下一首</li>
+<li>播放模式切换，支持单曲循环、顺序播放、随机播放</li>
+<li>黑胶唱片仿真动画</li>
+<li>后台播放及中断控制</li>
+<li>支持iOS10.0包括及以上系统</li>
+</ul>
+<h2 id="播放资源控制"><a href="#播放资源控制" class="headerlink" title="播放资源控制"></a>播放资源控制</h2><p>音乐播放器的核心功能是针对播放资源的控制，其核心内容包括媒体资源状态控制、播放器状态控制。</p>
+<p>值得庆幸的是我们并不用自己去实现复杂的底层功能，如在线资源拉取、资源缓存（如果有必要实现）、资源解码播放等，此处我们可以选用源生AVFoundation框架下的AVPlayer工具帮助我们完成这些功能，我们要做的是针对AVPlayer提供的接口根据业务进行封装。</p>
+<blockquote>
+<p>本文不介绍AVPlayer的详细使用，只针对具体使用业务场景提供封装思路及核心代码</p>
+</blockquote>
+<h3 id="AVPlayerItem封装"><a href="#AVPlayerItem封装" class="headerlink" title="AVPlayerItem封装"></a>AVPlayerItem封装</h3><p><code>AVPlayerItem</code>是<code>AVPlayer</code>播放资源的基本单位，得益于OC语言良好的命名习惯，我们非常容易理解AVPlayerItem类的定义，它管理了媒体资源的<code>地址</code>、<code>时长</code>、<code>缓存</code>，并提供相关状态属性用于监听。下面代码块展示的是被封装的属性：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AVPlayerItem.h</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 订阅这个通知，当资源完成播放时该通知会被发出</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">AVF_EXPORT</span> <span class="built_in">NSString</span> *<span class="keyword">const</span> <span class="built_in">AVPlayerItemDidPlayToEndTimeNotification</span>      <span class="built_in">NS_AVAILABLE</span>(<span class="number">10</span>_7, <span class="number">4</span>_0);   <span class="comment">// item has played to its end time</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*!</span></span><br><span class="line"><span class="comment"> @property status</span></span><br><span class="line"><span class="comment"> @abstract</span></span><br><span class="line"><span class="comment">	The ability of the receiver to be used for playback.</span></span><br><span class="line"><span class="comment"> @discussion</span></span><br><span class="line"><span class="comment">	The value of this property is an AVPlayerItemStatus that indicates whether the receiver can be used for playback.</span></span><br><span class="line"><span class="comment">	When the value of this property is AVPlayerItemStatusFailed, the receiver can no longer be used for playback and</span></span><br><span class="line"><span class="comment">	a new instance needs to be created in its place. When this happens, clients can check the value of the error</span></span><br><span class="line"><span class="comment">	property to determine the nature of the failure. This property is key value observable.</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment"> @translation</span></span><br><span class="line"><span class="comment"> 	监听这个属性可以帮助我们获取当前资源的状态是否可以用于播放</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">AVPlayerItemStatus</span> status;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*!</span></span><br><span class="line"><span class="comment"> @property loadedTimeRanges</span></span><br><span class="line"><span class="comment"> @abstract This property provides a collection of time ranges for which the player has the media data readily available. The ranges provided might be discontinuous.</span></span><br><span class="line"><span class="comment"> @discussion Returns an NSArray of NSValues containing CMTimeRanges.</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment"> @translation</span></span><br><span class="line"><span class="comment"> 	这个属性将会返回当前资源的缓存进度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSArray</span>&lt;<span class="built_in">NSValue</span> *&gt; *loadedTimeRanges;</span><br></pre></td></tr></table></figure>
+<p>值得关注的是，该类的多种状态响应使用了KVO、通知等方式发出，在接口阅读和使用上给我们带来了一定的困难，所以要将状态的监控再封装成我们熟悉的形式（delegate、block），并增加媒体播放的自定义参数：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CMPlayerItem.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">CMPlayerItem</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">CMPlayItemDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@optional</span></span><br><span class="line"><span class="comment">/** 缓存进度 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item bufferSeconds:(<span class="built_in">NSTimeInterval</span>)seconds rate:(<span class="built_in">CGFloat</span>)rate;</span><br><span class="line"><span class="comment">/** 资源状态 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item playItemStatus:(<span class="built_in">AVPlayerItemStatus</span>)status;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CMPlayerItem</span> : <span class="title">AVPlayerItem</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/** 名称 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *musicName;</span><br><span class="line"><span class="comment">/** 作者 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *musicAuthor;</span><br><span class="line"><span class="comment">/** 封面 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSURL</span> *musicCoverURL;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 工厂方法 */</span></span><br><span class="line">+ (<span class="keyword">instancetype</span>)musicPlayItemWithURL:(<span class="built_in">NSURL</span> *)URL name:(<span class="built_in">NSString</span> *)name author:(<span class="built_in">NSString</span> *)author coverURL:(<span class="built_in">NSURL</span> *)coverURL;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 缓存时长(s) */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>, <span class="keyword">readonly</span>) <span class="built_in">NSTimeInterval</span> bufferSeconds;</span><br><span class="line"><span class="comment">/** 总时长(s) */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>, <span class="keyword">readonly</span>) <span class="built_in">NSTimeInterval</span> durationSeconds;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 资源状态代理 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="keyword">id</span>&lt;<span class="built_in">CMPlayItemDelegate</span>&gt; delegate;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// CMPlayerItem.m</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">CMPlayerItem</span></span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)musicPlayItemWithURL:(<span class="built_in">NSURL</span> *)URL name:(<span class="built_in">NSString</span> *)name author:(<span class="built_in">NSString</span> *)author coverURL:(<span class="built_in">NSURL</span> *)coverURL &#123;</span><br><span class="line">    <span class="built_in">CMPlayerItem</span> *item = [<span class="keyword">self</span> playerItemWithURL:URL];</span><br><span class="line">    item.musicName = name;</span><br><span class="line">    item.musicAuthor = author;</span><br><span class="line">    item.musicCoverURL = coverURL;</span><br><span class="line">    </span><br><span class="line">    [item addObserver:item forKeyPath:<span class="string">@"status"</span> options:<span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">nil</span>];</span><br><span class="line">    [item addObserver:item forKeyPath:<span class="string">@"loadedTimeRanges"</span> options:<span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">nil</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark -</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath ofObject:(<span class="keyword">id</span>)object change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSString</span> *,<span class="keyword">id</span>&gt; *)change context:(<span class="keyword">void</span> *)context &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">self</span>.delegate) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 监听资源状态</span></span><br><span class="line">    <span class="keyword">if</span> ([keyPath isEqualToString:<span class="string">@"status"</span>]) &#123;</span><br><span class="line">        <span class="keyword">if</span> ([<span class="keyword">self</span>.delegate respondsToSelector:<span class="keyword">@selector</span>(musicPlayerItem:playItemStatus:)]) &#123;</span><br><span class="line">            [<span class="keyword">self</span>.delegate musicPlayerItem:<span class="keyword">self</span> playItemStatus:<span class="keyword">self</span>.status];</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="comment">// 监听资源下载进度</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ([keyPath isEqualToString:<span class="string">@"loadedTimeRanges"</span>]) &#123;</span><br><span class="line">        <span class="keyword">if</span> ([<span class="keyword">self</span>.delegate respondsToSelector:<span class="keyword">@selector</span>(musicPlayerItem:bufferSeconds:rate:)]) &#123;</span><br><span class="line">            [<span class="keyword">self</span>.delegate musicPlayerItem:<span class="keyword">self</span> bufferSeconds:<span class="keyword">self</span>.bufferSeconds rate:<span class="keyword">self</span>.bufferSeconds / <span class="keyword">self</span>.durationSeconds];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>这里我们利用了继承的特性，创建了一个符合业务需求的类，并使用了工厂方法提供了一个新的初始化器，用于初始化必要资源并添加监听。对比父类的接口，经过封装以后的API阅读起来是不是容易理解多了~</p>
+<h3 id="数据结构分析"><a href="#数据结构分析" class="headerlink" title="数据结构分析"></a>数据结构分析</h3><p>在封装<code>AVPlayer</code>之前，先来分析一下播放器需求。</p>
+<ul>
+<li>播放器有三种播放模式，顺序、乱序、单曲循环。点击下一曲按钮要根据不同的播放模式获取曲目</li>
+<li>点击上一曲按钮能够播放最近已经播放过上一首的曲目</li>
+<li>滑动黑胶唱片能够切换上一曲或下一曲</li>
+</ul>
+<p>通过对需求的分析，我们将业务转换为数据结构，播放器的播放资源组织可以通过一个特殊的队列结构进行管理，队列的长度为3，index=1指向播放中的数据，因为存在一个滑动唱片的操作设计，我们必须保证播放队列的内容长度永远为3，否则在滑动时再加载必然会造成页面卡顿。当切换下一曲时丢弃index=0的数据，从资源列表获取下一曲内容。但是这样的数据结构存在一个缺陷，当切换上一曲时，我们永远只能拿到上一次播放的资源。</p>
+<p>聪明的同学会发现上一曲功能具有LIFO特性，很像一个栈建构。那么我们将之前的播放队列做一点改造，使用一个栈结构将下一曲切换时丢弃的曲目保存好，当需要上一曲切换时使用栈中的内容补充队列空缺。</p>
+<p><img width="70%" src="/2019/02/06/高仿网易云音乐播放器/playing.png"></p>
+<p>有了思路，我们将上一曲切换的流程转化为数据结构图并实现核心代码。首先播放队列丢弃index=2的曲目，并从播放栈中获取栈顶曲目插入播放队列index=0。当播放栈内容为空时，根据不同的播放模式从播放列表直接获取资源插入播放队列</p>
+<p><img width="70%" src="/2019/02/06/高仿网易云音乐播放器/prev.png"></p>
+<p>核心代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)prev &#123;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 丢弃播放队列最后一个元素</span></span><br><span class="line">    [<span class="keyword">self</span>.playQueue removeLastObject];</span><br><span class="line">    <span class="built_in">CMPlayerItem</span> *prevItem = [<span class="keyword">self</span>.playedStack pop];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 当栈中内容为空</span></span><br><span class="line">    <span class="keyword">if</span> (!prevItem) &#123;</span><br><span class="line">        <span class="comment">// 直接获取上一首资源</span></span><br><span class="line">        prevItem = [<span class="keyword">self</span> prevResourceWithPlayingItem:<span class="keyword">self</span>.playQueue[<span class="built_in">CM_PLAYQUEUE_PREV_SOURCE</span>]];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 将资源插入播放队列</span></span><br><span class="line">    [<span class="keyword">self</span>.playQueue insertObject:prevItem atIndex:<span class="built_in">CM_PLAYQUEUE_PREV_SOURCE</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 更新播放器资源</span></span><br><span class="line">    [<span class="keyword">self</span> replaceCurrentItemWithPlayerItem:<span class="keyword">self</span>.playQueue[<span class="built_in">CM_PLAYQUEUE_PLAYING_SOURCE</span>]];</span><br><span class="line">    [<span class="keyword">self</span> replay];</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下一曲切换操作和上一曲类似，只不过我们要改变一下数据流方向，将播放队列index=0内容丢至播放栈中，并从播放列表中根据当前模式插入播放队列index=2位置</p>
+<p><img width="70%" src="/2019/02/06/高仿网易云音乐播放器/next.png"></p>
+<p>核心代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)next &#123;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 将index=0内容放入播放栈</span></span><br><span class="line">    [<span class="keyword">self</span>.playedStack push:<span class="keyword">self</span>.playQueue[<span class="built_in">CM_PLAYQUEUE_PREV_SOURCE</span>]];</span><br><span class="line">    [<span class="keyword">self</span>.playQueue removeObjectAtIndex:<span class="built_in">CM_PLAYQUEUE_PREV_SOURCE</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 从播放列表补充下一首数据</span></span><br><span class="line">    [<span class="keyword">self</span>.playQueue addObject:[<span class="keyword">self</span> nextResourceWithPlayingItem:<span class="keyword">self</span>.playQueue[<span class="built_in">CM_PLAYQUEUE_PLAYING_SOURCE</span>]]];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 更新播放器资源</span></span><br><span class="line">    [<span class="keyword">self</span> replaceCurrentItemWithPlayerItem:<span class="keyword">self</span>.playQueue[<span class="built_in">CM_PLAYQUEUE_PLAYING_SOURCE</span>]];</span><br><span class="line">    [<span class="keyword">self</span> replay];</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AVPlayer封装"><a href="#AVPlayer封装" class="headerlink" title="AVPlayer封装"></a>AVPlayer封装</h3><p>和封装<code>AVPlayerItem</code>思路一样，通过继承的方式我们创建一个新类<code>CMPlayer</code>，整合父类接口并用我们熟悉的方式暴露新的API，下面是.h文件代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CMPlayer.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">CMPlayer</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">CMPlayerItem</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 播放模式选择</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> - CMPlayerModeLoop: 顺序</span></span><br><span class="line"><span class="comment"> - CMPlayerModeOne: 单曲循环</span></span><br><span class="line"><span class="comment"> - CMPlayerModeShuffle: 乱序</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, <span class="built_in">CMPlayerMode</span>) &#123;</span><br><span class="line">    <span class="built_in">CMPlayerModeLoop</span>,</span><br><span class="line">    <span class="built_in">CMPlayerModeOne</span>,</span><br><span class="line">    <span class="built_in">CMPlayerModeShuffle</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">CMPlayerDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@optional</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/** 播放 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerStatusPlaying:(<span class="built_in">CMPlayer</span> *)player musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item;</span><br><span class="line"><span class="comment">/** 暂停 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerStatusPaused:(<span class="built_in">CMPlayer</span> *)player musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item;</span><br><span class="line"><span class="comment">/** 加载中 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerStatusLoading:(<span class="built_in">CMPlayer</span> *)player musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item;</span><br><span class="line"><span class="comment">/** 完成 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerStatusComplete:(<span class="built_in">CMPlayer</span> *)player musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 下一首 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerStatusNext:(<span class="built_in">CMPlayer</span> *)player musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item;</span><br><span class="line"><span class="comment">/** 上一首 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerStatusPrev:(<span class="built_in">CMPlayer</span> *)player musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item;</span><br><span class="line"><span class="comment">/** 重播 */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerStatusReplay:(<span class="built_in">CMPlayer</span> *)player musicPlayerItem:(<span class="built_in">CMPlayerItem</span> *)item;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 进度监听，间隔1s */</span></span><br><span class="line">- (<span class="keyword">void</span>)musicPlayerPlayingProgressCurrenSeconds:(<span class="built_in">NSTimeInterval</span>)currentSec duration:(<span class="built_in">NSTimeInterval</span>)durationSec buffer:(<span class="built_in">NSTimeInterval</span>)bufferSec;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CMPlayer</span> : <span class="title">AVPlayer</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 初始化播放器</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param playList 播放列表</span></span><br><span class="line"><span class="comment"> @return 实例</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithPlayList:(<span class="built_in">NSArray</span>&lt;<span class="built_in">CMPlayerItem</span> *&gt; *)playList;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 播放模式 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CMPlayerMode</span> playerMode;</span><br><span class="line"><span class="comment">/** 播放器代理 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="keyword">id</span>&lt;<span class="built_in">CMPlayerDelegate</span>&gt; delegate;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark -</span></span><br><span class="line"><span class="comment">/** 播放列表 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSArray</span>&lt;<span class="built_in">CMPlayerItem</span> *&gt; *playList;</span><br><span class="line"><span class="comment">/** 播放队列 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSArray</span> *currentPlayingQueue;</span><br><span class="line"><span class="comment">/** 当前播放资源 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">CMPlayerItem</span> *currentMusicItem;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark -</span></span><br><span class="line"><span class="comment">/** 当前播放时长 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSTimeInterval</span> currentSeconds;</span><br><span class="line"><span class="comment">/** 放回当前播放item.duration */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSTimeInterval</span> durationSeconds;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark -</span></span><br><span class="line"><span class="comment">/** 下一首 */</span></span><br><span class="line">- (<span class="keyword">void</span>)next;</span><br><span class="line"><span class="comment">/** 上一首 */</span></span><br><span class="line">- (<span class="keyword">void</span>)prev;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>.m文件具体实现代码请通过文末github链接自行clone，此处不再赘述</p>
+</blockquote>
+<h2 id="后台播放控制"><a href="#后台播放控制" class="headerlink" title="后台播放控制"></a>后台播放控制</h2><h3 id="允许后台播放"><a href="#允许后台播放" class="headerlink" title="允许后台播放"></a>允许后台播放</h3><p>播放器需要在应用切换到后台时，保持音频播放能力。允许后台播放最简单的方式，是在<code>Target - Capability - Background Modes</code>中进行配置</p>
+<p><img src="https://docs-assets.developer.apple.com/published/f27f0815f6/d865bb39-a4c6-40ef-ba0b-7823cea46e83.png"></p>
+<p><a href="https://developer.apple.com/documentation/avfoundation/media_assets_playback_and_editing/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio?language=objc" target="_blank" rel="noopener">参考文献：《Enabling Background Audio》</a></p>
+<h3 id="设置AVAudioSession"><a href="#设置AVAudioSession" class="headerlink" title="设置AVAudioSession"></a>设置AVAudioSession</h3><p>可以使用<code>AVAudioSession</code>告诉操作系统如何处理你的App音频流，而不需要和音频硬件产生直接的交互或者操作</p>
+<p><img width="70%" src="https://developer.apple.com/library/archive/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/Art/ASPG_intro_2x.png"></p>
+<p>设置<code>AVAudioSession</code>的<code>Category</code>确定基本事件行为，再使用<code>Mode`</code>Options`两个属性对行为进行微调，下面是播放器设置源码:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="built_in">NSDictionary</span> *)launchOptions &#123;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 设置并激活音频会话类别</span></span><br><span class="line">    <span class="built_in">AVAudioSession</span> *session = [<span class="built_in">AVAudioSession</span> sharedInstance];</span><br><span class="line">    <span class="comment">// 设置Category只支持音频播放，打断其他不支持混音App</span></span><br><span class="line">    [session setCategory:<span class="built_in">AVAudioSessionCategoryPlayback</span> error:<span class="literal">nil</span>];</span><br><span class="line">    <span class="comment">// 启用session</span></span><br><span class="line">    [session setActive:<span class="literal">YES</span> error:<span class="literal">nil</span>];</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://developer.apple.com/library/archive/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/Introduction/Introduction.html" target="_blank" rel="noopener">参考文献：《Audio Session Programming Guide》</a></p>
+<h3 id="远程控制媒体播放"><a href="#远程控制媒体播放" class="headerlink" title="远程控制媒体播放"></a>远程控制媒体播放</h3><p>我们还需支持在锁屏的媒体资源信息展示以及控制中心中对音乐的控制。我们可以使用Media Player框架的<code>MPRemoteCommandCenter</code>和<code>MPNowPlayingInfoCenter</code>实现。</p>
+<p><code>MPRemoteCommandCenter</code>使用事件绑定的方式实现对远程事件的监听处理，每个控制事件都封装了一个<code>MPRemoteCommand</code>对象，为具体的事件添加响应方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CMPlayer.m</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)handleRemoteControlEvent &#123;</span><br><span class="line">    <span class="built_in">MPRemoteCommandCenter</span> *commandCenter = [<span class="built_in">MPRemoteCommandCenter</span> sharedCommandCenter];</span><br><span class="line">    <span class="comment">// 播放</span></span><br><span class="line">    [commandCenter.playCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(play)];</span><br><span class="line">    <span class="comment">// 暂停</span></span><br><span class="line">    [commandCenter.pauseCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(pause)];</span><br><span class="line">    <span class="comment">// 上一首</span></span><br><span class="line">    [commandCenter.previousTrackCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(prev)];</span><br><span class="line">    <span class="comment">// 下一首</span></span><br><span class="line">    [commandCenter.nextTrackCommand addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(next)];</span><br><span class="line">    <span class="comment">// 为耳机的按钮操作添加相关的响应事件</span></span><br><span class="line">    [commandCenter.togglePlayPauseCommand addTargetWithHandler:^<span class="built_in">MPRemoteCommandHandlerStatus</span>(<span class="built_in">MPRemoteCommandEvent</span> * _Nonnull event) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.timeControlStatus == <span class="built_in">AVPlayerTimeControlStatusPlaying</span>) &#123;</span><br><span class="line">            [<span class="keyword">self</span> pause];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            [<span class="keyword">self</span> play];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">MPRemoteCommandHandlerStatusSuccess</span>;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>MPNowPlayingInfoCenter</code>是一个可以设置当前播放媒体需要展示信息的对象，这些信息会被展示到锁屏界面、控制中心等处，以下是简单用法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CMPlayer.m</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)configNowPlayingInfoCenter &#123;</span><br><span class="line">    <span class="built_in">NSMutableDictionary</span> *nowPlayInfo = [[<span class="built_in">NSMutableDictionary</span> alloc] init];</span><br><span class="line">    <span class="comment">// 歌曲名称</span></span><br><span class="line">    [nowPlayInfo setObject:<span class="keyword">self</span>.currentMusicItem.musicName forKey:<span class="built_in">MPMediaItemPropertyTitle</span>];</span><br><span class="line">    <span class="comment">// 演唱者</span></span><br><span class="line">    [nowPlayInfo setObject:<span class="keyword">self</span>.currentMusicItem.musicAuthor forKey:<span class="built_in">MPMediaItemPropertyArtist</span>];</span><br><span class="line">    <span class="comment">// 音乐剩余时长</span></span><br><span class="line">    [nowPlayInfo setObject:@(<span class="keyword">self</span>.currentMusicItem.durationSeconds) forKey:<span class="built_in">MPMediaItemPropertyPlaybackDuration</span>];</span><br><span class="line">    <span class="comment">// 音乐当前播放时间</span></span><br><span class="line">    [nowPlayInfo setObject:@(<span class="keyword">self</span>.currentSeconds) forKey:<span class="built_in">MPNowPlayingInfoPropertyElapsedPlaybackTime</span>];</span><br><span class="line">    </span><br><span class="line">    [[<span class="built_in">MPNowPlayingInfoCenter</span> defaultCenter] setNowPlayingInfo:nowPlayInfo];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://developer.apple.com/documentation/avfoundation/media_assets_playback_and_editing/creating_a_basic_video_player_ios_and_tvos/controlling_background_audio?language=objc" target="_blank" rel="noopener">参考文献：《Controlling Background Audio》</a></p>
+<h2 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h2><p>本文为博主原创文章，项目资源均只供学习请勿商用，转载请附上博文链接！</p>
+<p><a href="https://github.com/tianxueweii/Music163Demo" target="_blank" rel="noopener">Demo地址</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/13/关于AutoReleasePool和ARC的一些研究/" rel="next" title="关于AutoReleasePool和ARC的一些研究">
+                <i class="fa fa-chevron-left"></i> 关于AutoReleasePool和ARC的一些研究
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/default_avatar.gif"
+                alt="Tian Xueweii" />
+            
+              <p class="site-author-name" itemprop="name">Tian Xueweii</p>
+              <p class="site-description motion-element" itemprop="description">tianxueweii's iOS blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/tianxueweii" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#播放资源控制"><span class="nav-number">1.</span> <span class="nav-text">播放资源控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AVPlayerItem封装"><span class="nav-number">1.1.</span> <span class="nav-text">AVPlayerItem封装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构分析"><span class="nav-number">1.2.</span> <span class="nav-text">数据结构分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AVPlayer封装"><span class="nav-number">1.3.</span> <span class="nav-text">AVPlayer封装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后台播放控制"><span class="nav-number">2.</span> <span class="nav-text">后台播放控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#允许后台播放"><span class="nav-number">2.1.</span> <span class="nav-text">允许后台播放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置AVAudioSession"><span class="nav-number">2.2.</span> <span class="nav-text">设置AVAudioSession</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程控制媒体播放"><span class="nav-number">2.3.</span> <span class="nav-text">远程控制媒体播放</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于"><span class="nav-number">3.</span> <span class="nav-text">关于</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tian Xueweii</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
