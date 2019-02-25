@@ -120,7 +120,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/01/13/关于AutoReleasePool和ARC的一些研究/20190113024057.png">
 <meta property="og:image" content="http://yoursite.com/2019/01/13/关于AutoReleasePool和ARC的一些研究/20190113024005.png">
 <meta property="og:image" content="http://yoursite.com/2019/01/13/关于AutoReleasePool和ARC的一些研究/20190113023927.png">
-<meta property="og:updated_time" content="2019-01-12T19:30:54.977Z">
+<meta property="og:updated_time" content="2019-02-25T14:10:56.805Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于AutoReleasePool和ARC的一些研究">
 <meta name="twitter:description" content="本文将会阐述AutoReleasePool和ARC所有权修饰符的实现原理和自己的一些理解，并解决如下几个问题：  AutoReleasePool和ARC是怎么配合完成内存管理的； __weak修饰的变量引用和释放问题； ARC的实现原理； BAD_ACCESS的出现原因； 局部变量的释放问题； …  AutoReleasePool运行原理AutoRelease顾名思义会在某个时机自动释放管理在池内">
@@ -340,12 +340,24 @@
                 
               
 
-              <time title="创建时间：2019-01-13 03:24:30 / 修改时间：03:30:54" itemprop="dateCreated datePublished" datetime="2019-01-13T03:24:30+08:00">2019-01-13</time>
+              <time title="创建时间：2019-01-13 03:24:30" itemprop="dateCreated datePublished" datetime="2019-01-13T03:24:30+08:00">2019-01-13</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-25 22:10:56" itemprop="dateModified" datetime="2019-02-25T22:10:56+08:00">2019-02-25</time>
               
             
           </span>
@@ -403,10 +415,10 @@
 <h3 id="Autorelease在不同编译环境的使用"><a href="#Autorelease在不同编译环境的使用" class="headerlink" title="Autorelease在不同编译环境的使用"></a>Autorelease在不同编译环境的使用</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#pragma mark - MRC</span></span><br><span class="line"><span class="comment">//1. 使用公用池</span></span><br><span class="line">[<span class="built_in">NSAutoreleasePool</span> addObject:autoReleasedObj]; </span><br><span class="line"></span><br><span class="line"><span class="comment">//2. 使用NSAutoreleasePool对象</span></span><br><span class="line"><span class="built_in">NSAutoreleasePool</span> *pool=[[<span class="built_in">NSAutoreleasePool</span> alloc] init];</span><br><span class="line"></span><br><span class="line">ClassA *a = [[[ClassA alloc] init] autorelease];</span><br><span class="line">ClassB *b = [[[ClassB alloc] init] autorelease];</span><br><span class="line">...</span><br><span class="line">[pool release];</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - ARC</span></span><br><span class="line"><span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">	<span class="comment">//your code here will be autoreleased</span></span><br><span class="line">	<span class="keyword">id</span> obj = [[<span class="built_in">NSObject</span> alloc] init];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="自动释放池的使用场景"><a href="#自动释放池的使用场景" class="headerlink" title="自动释放池的使用场景"></a>自动释放池的使用场景</h3><p>目前常用的自动释放池使用场景有两处：</p>
 <ul>
-<li>当产生大量局部变量时</li>
+<li>当产生大量Autorelease局部变量时</li>
 </ul>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *urls = &lt;<span class="meta"># An array of file URLs #&gt;;</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSURL</span> *url <span class="keyword">in</span> urls) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="built_in">NSError</span> *error;</span><br><span class="line">        <span class="built_in">NSString</span> *fileContents = [<span class="built_in">NSString</span> stringWithContentsOfURL:url</span><br><span class="line">                                         encoding:<span class="built_in">NSUTF8StringEncoding</span></span><br><span class="line">                                         error:&amp;error];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>为了加快for语句的效率，启用了ARC的编译期不会对循环内的局部变量retain，所以当urls.count值很大时，会产生大量的临时对象，而这些对象在Runloop结束之前，都不会被释放，那么必然会导致这个Runloop周期内的内存峰值过大，我们可以使用自释放池包裹每次循环的内容，那么当一次循环结束，池内的临时对象都将被销毁</p>
+<p>这些对象在Runloop结束之前，都不会被释放，那么必然会导致这个Runloop周期内的内存峰值过大，我们可以使用自释放池包裹每次循环的内容，那么当一次循环结束，池内的临时对象都将被销毁</p>
 <ul>
 <li>需要自己管理一个辅助线程时</li>
 </ul>
